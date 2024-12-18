@@ -1,0 +1,186 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://decdn/skin/prefs.css" type="text/css"?>
+<!DOCTYPE decdnPrefs SYSTEM "chrome://decdn/locale/prefs.dtd">
+<prefwindow id="decdnPrefs" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+            title="&preferences.title;" onload="decdn_Prefs.init()" onbeforeaccept="decdn_Prefs.onBeforeAccept();">
+ <stringbundle id="bundle" src="chrome://decdn/locale/prefs.properties" />
+ <script type="text/javascript" src="chrome://decdn/content/consts.js" />
+ <script type="text/javascript" src="chrome://decdn/content/prefs.js" />
+ <prefpane flex="1">
+  <preferences>
+   <preference id="prefSitesBypass" name="extensions.decdn.bypassDomains" type="string" />
+   <preference id="prefCDNsBlock" name="extensions.decdn.blockCDNs" type="string" />
+   <preference id="prefDowngrade" name="extensions.decdn.downgrade" type="bool" />
+   <preference id="prefHeaders" name="extensions.decdn.stripheaders" type="bool" />
+   <preference id="prefBranch" name="extensions.decdn.repo.branch" type="string" />
+   <preference id="prefBranchAPI" name="extensions.decdn.repo.branches.api" type="string" />
+   <preference id="prefBranchAge" name="extensions.decdn.repo.branches.age" type="int" />
+   <preference id="prefCommit" name="extensions.decdn.repo.commit" type="string" readonly="true" />
+   <preference id="prefLinkBase" name="extensions.decdn.repo.url.base" type="string" readonly="true" />
+   <preference id="prefLinkGraph" name="extensions.decdn.repo.url.graph" type="string" readonly="true" />
+   <preference id="prefPreload" name="network.preload" type="bool" />
+  </preferences>
+  <tabbox>
+   <tabs>
+    <tab label="&tabs.settings;" />
+    <tab label="&tabs.hosts;" />
+    <tab id="tabCDNs" label="&tabs.cdns;" />
+   </tabs>
+   <tabpanels>
+    <tabpanel>
+     <vbox flex="1">
+      <groupbox>
+       <caption label="&group.resources;" />
+       <vbox>
+        <hbox>
+         <checkbox label="&allowdowngrade.label;" preference="prefDowngrade" />
+         <spacer flex="1" />
+        </hbox>
+        <hbox>
+         <separator orient="vertical" class="thin" />
+         <description>&allowdowngrade.descA;</description>
+        </hbox>
+        <hbox>
+         <separator orient="vertical" class="thin" />
+         <description id="lblDowngradeDesc1">&allowdowngrade.descB1;</description>
+        </hbox>
+        <hbox>
+         <separator orient="vertical" class="thin" />
+         <description id="lblDowngradeDesc2">&allowdowngrade.descB2;</description>
+        </hbox>
+        <separator />
+        <grid>
+         <columns>
+          <column />
+          <column flex="1" />
+         </columns>
+         <rows>
+          <row align="center">
+           <label control="cmbBranch" value="&branch.label;" />
+           <hbox align="center">
+            <menulist id="cmbBranch" preference="prefBranch" oncommand="decdn_Prefs.onBranchChange(event);" sizetopopup="none" flex="1" />
+            <button id="cmdRefreshBranches" label="&#x1f501;" oncommand="decdn_Prefs.updateBranches()" />
+            <label id="lblBranchChanged" value="&branch.changed;" />
+           </hbox>
+          </row>
+          <row>
+           <label control="lnkArchive" value="&commit.label;" />
+           <hbox>
+            <label id="lnkArchive" value="N/A" />
+            <spacer flex="1" />
+           </hbox>
+          </row>
+         </rows>
+        </grid>
+       </vbox>
+      </groupbox>
+      <spacer flex="1" />
+      <groupbox>
+       <caption label="&group.cdn;" />
+       <vbox>
+        <hbox>
+         <checkbox label="&stripheaders.label;" preference="prefHeaders" />
+         <spacer flex="1" />
+        </hbox>
+        <hbox>
+         <separator orient="vertical" class="thin" />
+         <description>&stripheaders.desc;</description>
+        </hbox>
+        <separator />
+        <hbox>
+         <checkbox id="chkBlockMissing" label="&blockmissing.label;" oncommand="decdn_Prefs.onBlockChange();" />
+         <spacer flex="1" />
+        </hbox>
+        <hbox>
+         <separator orient="vertical" class="thin" />
+         <description>&blockmissing.descA;</description>
+        </hbox>
+        <hbox>
+         <separator orient="vertical" class="thin" />
+         <description>&blockmissing.descB;</description>
+        </hbox>
+       </vbox>
+      </groupbox>
+      <spacer flex="1" />
+      <hbox align="center">
+       <checkbox label="&preload.label;" preference="prefPreload" />
+       <spacer flex="1" />
+      </hbox>
+      <hbox>
+       <separator orient="vertical" class="thin" />
+       <label value="&preload.spec.label;" />
+       <spacer flex="1" />
+       <label value="&preload.spec.link;" class="text-link" href="https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/rel/preload" tooltiptext="https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/rel/preload" />
+      </hbox>
+      <hbox>
+       <separator orient="vertical" class="thin" />
+       <label value="&preload.issue.label;" />
+       <spacer flex="1" />
+       <label value="&preload.issue.link;" class="text-link" href="https://repo.palemoon.org/MoonchildProductions/UXP/issues/2158" tooltiptext="https://repo.palemoon.org/MoonchildProductions/UXP/issues/2158" />
+      </hbox>
+     </vbox>
+    </tabpanel>
+    <tabpanel>
+     <vbox flex="1">
+      <hbox align="center">
+       <checkbox id="chkSiteSel" label="&selectall.label;" oncommand="decdn_Prefs.mHostView.onSelAll(event);" />
+       <spacer flex="1" />
+       <label id="lblSiteScope" control="cmbSiteScope" value="&selscope.label;" />
+       <menulist id="cmbSiteScope" onkeypress="decdn_Prefs.mHostView.onScopeKeyPress(event);" />
+       <button id="cmdSiteScope" label="&button.apply;" disabled="true" oncommand="decdn_Prefs.mHostView.onSetSelScope();" />
+      </hbox>
+      <listbox id="lstHosts" seltype="multiple" onselect="decdn_Prefs.mHostView.onListSelected();" onkeypress="decdn_Prefs.mHostView.onListKeyPress(event);" style="min-height: 18em;" flex="1">
+       <listhead>
+        <listheader id="colSiteHostHdr" label="&hosts.column.site;" onclick="decdn_Prefs.mHostView.onListSort('colSiteHost');" sortable="true" />
+        <listheader id="colSiteScopeHdr" label="&hosts.column.scope;" onclick="decdn_Prefs.mHostView.onListSort('colSiteScope');" sortable="true" />
+       </listhead>
+       <listcols>
+        <listcol id="colSiteHost" flex="2" />
+        <listcol id="colSiteScope" flex="1" />
+       </listcols>
+      </listbox>
+      <hbox>
+       <spacer flex="1" />
+       <button id="cmdRemove" label="&button.remove;" disabled="true" oncommand="decdn_Prefs.mHostView.onRemSelClick()" />
+       <separator orient="vertical" class="thin" />
+       <button id="cmdRemoveAll" label="&button.removeall;" oncommand="decdn_Prefs.mHostView.onRemAllClick()" />
+      </hbox>
+      <separator class="thin" />
+      <hbox>
+       <groupbox flex="1">
+        <caption label="&hostaddress.label;" />
+        <hbox flex="1">
+         <textbox id="txtSite" oninput="decdn_Prefs.mHostView.onTextInput(event.target);" onkeypress="decdn_Prefs.mHostView.onTextKeyPress(event);" flex="1" />
+         <menulist id="cmbNewSiteScope" onkeypress="decdn_Prefs.mHostView.onTextKeyPress(event);" />
+         <button id="cmdBypass" label="+" disabled="true" oncommand="decdn_Prefs.mHostView.onAddClick();" />
+        </hbox>
+       </groupbox>
+      </hbox>
+      <separator class="thin" />
+      <description id="lblHostScope">&hosts.scope.desc;</description>
+     </vbox>
+    </tabpanel>
+    <tabpanel>
+     <vbox flex="1">
+      <hbox align="center">
+       <checkbox id="chkCDNSel" label="&selectall.label;" oncommand="decdn_Prefs.mCDNView.onSelAll(event);" />
+       <spacer flex="1" />
+       <textbox id="txtCDNSearch" type="search" emptytext="&cdns.search;" oncommand="decdn_Prefs.mCDNView.filter();" />
+      </hbox>
+      <tree id="trCDNs" onselect="decdn_Prefs.mCDNView.onTreeSelected();" hidecolumnpicker="true" editable="true" style="min-height: 18em;" flex="1">
+       <treecols>
+        <treecol id="colCDNChk" type="checkbox" editable="true" class="treecol-image" src="chrome://global/skin/checkbox/cbox-check.gif" width="24" />
+        <treecol id="colCDN" label="&cdns.column.site;" flex="4" />
+        <treecol id="colCDNState" label="&cdns.column.state;" flex="1" />
+       </treecols>
+       <treechildren />
+      </tree>
+      <separator class="thin" />
+      <description>&cdns.scope.desc;</description>
+     </vbox>
+    </tabpanel>
+   </tabpanels>
+  </tabbox>
+ </prefpane>
+</prefwindow>

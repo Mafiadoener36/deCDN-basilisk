@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://decdn/skin/overlay.css" type="text/css"?>
+<!DOCTYPE decdn SYSTEM "chrome://decdn/locale/decdn.dtd">
+<overlay id="decdnOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+ <script src="chrome://decdn/content/consts.js" />
+ <script src="chrome://decdn/content/uri-tools.js" />
+ <script src="chrome://decdn/content/parser.js" />
+ <script src="chrome://decdn/content/archive.js" />
+ <script src="chrome://decdn/content/data.js" />
+ <script src="chrome://decdn/content/overlay.js" />
+ <script src="chrome://decdn/content/interceptor.js" />
+ <toolbarpalette id="BrowserToolbarPalette">
+  <toolbarbutton id="decdn-button"/>
+ </toolbarpalette>
+ <window id="main-window">
+  <tooltip id="decdn-tooltip" orient="vertical">
+   <hbox class="decdn-title-hbox">
+    <image id="decdn-tooltip-icon" class="decdn-title-icon" />
+    <label class="decdn-title-label" value="deCDN" />
+    <spacer flex="1" />
+   </hbox>
+   <description id="decdn-tooltip-refresh" class="decdn-refresh-notice" />
+   <separator />
+   <vbox id="ttCDNs" />
+  </tooltip>
+  <panel id="decdn-panel" orient="vertical" noautohide="false"
+   onpopupshowing="document.getElementById('decdn-button').removeAttribute('tooltip');"
+   onpopuphiding="document.getElementById('decdn-button').setAttribute('tooltip', 'decdn-tooltip');">
+   <hbox class="decdn-title-hbox">
+    <image id="decdn-panel-icon" class="decdn-title-icon" />
+    <label class="decdn-title-label" value="deCDN" />
+    <spacer flex="1" />
+    <checkbox class="decdn-toggle" id="decdn-host-toggle" oncommand="decdn_Overlay.onHostToggle();" />
+    <menulist id="decdn-host-combo" oncommand="decdn_Overlay.onHostCombo();" />
+   </hbox>
+   <description id="decdn-panel-refresh" class="decdn-refresh-notice" />
+   <separator />
+   <vbox id="pnlCDNs" />
+  </panel>
+ </window>
+ <toolbarbutton id="decdn-button"
+                label="&button.label;"
+                oncommand="decdn_Overlay.onButtonClick(event);"
+                tooltip="decdn-tooltip"
+                class="toolbarbutton-1 chromeclass-toolbar-additional"/>
+</overlay>

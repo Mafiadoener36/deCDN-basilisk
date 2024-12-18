@@ -1,0 +1,59 @@
+<!ENTITY preferences.title        "deCDN Preferences">
+
+
+<!ENTITY tabs.settings            "Settings">
+
+<!ENTITY group.resources          "Intercepted Resources">
+
+<!ENTITY allowdowngrade.label     "Allow downgrading">
+<!ENTITY allowdowngrade.descA     "Use the local version, even if it's older. This may break some websites.">
+<!ENTITY allowdowngrade.descB1    "If disabled, newer versions will be loaded from CDN servers.">
+<!ENTITY allowdowngrade.descB2    "If disabled, newer versions will be treated as &quot;Missing&quot;.">
+
+<!ENTITY branch.label             "Repo Branch:">
+<!ENTITY branch.changed           "(Requires Archive Re-Download)">
+<!ENTITY commit.label             "Repo Commit:">
+
+<!ENTITY group.cdn                "CDN Server Access">
+
+<!ENTITY stripheaders.label       "Strip identifying headers from allowed CDN requests">
+<!ENTITY stripheaders.desc        "Removes &quot;Cookie&quot;, &quot;Origin&quot;, and &quot;Referer&quot; headers.">
+
+<!ENTITY blockmissing.label       "Block CDN access for Missing Resources (advanced)">
+<!ENTITY blockmissing.descA       "Gives you control over which CDN connections are allowed or blocked.">
+<!ENTITY blockmissing.descB       "Warning: Blocking scripts can easily break websites. Use with care!">
+
+<!ENTITY preload.label            "Preload page content">
+<!ENTITY preload.spec.label       "About the &lt;link rel=&quot;preload&quot;&gt; standard:">
+<!ENTITY preload.spec.link        "MDN Article">
+<!ENTITY preload.issue.label      "Pale Moon's implementation of preloading:">
+<!ENTITY preload.issue.link       "UXP Issue">
+
+<!ENTITY tabs.hosts               "Ignore Hosts">
+
+<!ENTITY hosts.column.site        "Host">
+<!ENTITY hosts.column.scope       "Scope">
+
+<!ENTITY button.remove            "Remove Selected URL(s)">
+<!ENTITY button.removeall         "Remove All URLs">
+
+<!ENTITY hostaddress.label        "Add Host:">
+
+<!ENTITY hosts.scope.desc         "Note: Entries in the &quot;Block CDNs&quot; tab do not apply to these hosts.">
+
+
+<!ENTITY tabs.cdns                "Block CDNs">
+
+<!ENTITY cdns.search              "CDN Filter"> 
+
+<!ENTITY cdns.column.site         "CDN">
+<!ENTITY cdns.column.state        "Connection">
+
+<!ENTITY cdns.scope.desc          "Note: Entries in the &quot;Ignore Hosts&quot; tab override these settings.">
+
+
+<!ENTITY selectall.label          "Select All">
+<!ENTITY selscope.label           "Selection Scope:">
+<!ENTITY button.apply             "Set">
+
+

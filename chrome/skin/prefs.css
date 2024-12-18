@@ -1,0 +1,27 @@
+#cmdRefreshBranches
+{
+ min-width: unset;
+}
+
+#lstHosts listcell.listcell-iconic image
+{
+ height: 16px;
+}
+
+treechildren::-moz-tree-checkbox
+{
+ list-style-image: url('')
+}
+treechildren::-moz-tree-checkbox(checked)
+{
+ list-style-image: url('chrome://global/skin/checkbox/cbox-check.gif');
+}
+
+#colCDNChk.some image
+{
+ filter: opacity(0.5);
+}
+#colCDNChk.none image
+{
+ filter: opacity(0.25);
+}

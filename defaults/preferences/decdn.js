@@ -1,0 +1,14 @@
+pref("extensions.{38DC6B77-0FD5-5F30-AC49-E9D1A422779B}.description", "chrome://decdn/locale/decdn.properties");
+pref('extensions.decdn.blockCDNs', '{}');
+pref('extensions.decdn.bypassDomains', '{}');
+pref('extensions.decdn.downgrade', true);
+pref('extensions.decdn.repo.branch', 'main');
+pref('extensions.decdn.repo.branches.age', 6);
+pref('extensions.decdn.repo.branches.api', 'https://codeberg.org/api/v1/repos/nobody/LocalCDN/branches');
+pref('extensions.decdn.repo.commit', '');
+pref('extensions.decdn.repo.lastCheck', 0);
+pref('extensions.decdn.repo.update', 14);
+pref('extensions.decdn.repo.url.base', 'https://codeberg.org/nobody/LocalCDN');
+pref('extensions.decdn.repo.url.graph', '/graph#commit-%COMMIT%');
+pref('extensions.decdn.repo.url.zip', '/archive/%BRANCH%.zip');
+pref('extensions.decdn.stripheaders', false);
