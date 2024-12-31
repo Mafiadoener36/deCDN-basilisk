@@ -282,6 +282,7 @@ var decdn_Prefs = {
    decdn_Prefs.updatePrefs();
    txtSite.value = '';
    txtSite.focus();
+   document.getElementById('cmdBypass').disabled = true;
    document.getElementById('cmdRemoveAll').disabled = this.rowCount === 0;
   },
   onRemSelClick: function()
