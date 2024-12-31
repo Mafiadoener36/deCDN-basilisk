@@ -713,12 +713,7 @@ var decdn_Prefs = {
   let sCDNs = prefCDNs.defaultValue;
   if (prefCDNs.hasUserValue)
    sCDNs = prefCDNs.valueFromPreferences;
-
-  let cdnList = {};
-  if (prefCDNs.hasUserValue)
-   cdnList = JSON.parse(prefCDNs.valueFromPreferences);
-  else
-   cdnList = JSON.parse(prefCDNs.defaultValue);
+  const cdnList = JSON.parse(sCDNs);
 
   let hostSpecial = false;
   for (const h in decdn_Prefs.mHostView.hostList)
