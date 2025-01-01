@@ -20,9 +20,6 @@ var decdn_Parser = {
   let sSearch = '';
   if (!!sURL.query)
    sSearch = '?' + sURL.query;
-  let sHash = '';
-  if (!! sURL.ref)
-   sHash = '#' + sURL.ref;
   const cdnHost = decdn_Archive.scripts.mappings.cdn[sHost];
   if (sURL.fileExtension.toLowerCase() === 'map')
    return false;
@@ -32,7 +29,7 @@ var decdn_Parser = {
   const aRes = cdnHost[cdnPath];
   if (!aRes)
    return false;
-  return decdn_Parser._find(aRes, cdnPath, sHost, sPathname, sSearch, sHash);
+  return decdn_Parser._find(aRes, cdnPath, sHost, sPathname, sSearch);
  },
  _findPath: function(cdnHost, sPathname)
  {
@@ -43,14 +40,8 @@ var decdn_Parser = {
   }
   return false;
  },
- _find: function(aRes, cdnPath, host, path, search, hash)
+ _find: function(aRes, cdnPath, host, path, search)
  {
-  if (!!hash)
-  {
-   const hTest = decdn_Parser._handleSpecific(hash);
-   if (!!hTest)
-    return hTest;
-  }
   const regVer = /(?:\d{1,2}\.){1,3}\d{1,2}(?:-\d)?|latest/;
   const regWeird = /\D+@?\d{1,2}\D*/;
   const regBAB = /-(alpha|beta).?\d?/;
@@ -161,50 +152,6 @@ var decdn_Parser = {
   if (tPath.startsWith('resources/element-ui/') && fName.endsWith('.jsm') && !fName.endsWith('.min.jsm'))
    fName = fName.slice(0, -4) + '.min.jsm';
   return tPath + fName;
- },
- _handleSpecific: function(hash)
- {
-  if (hash.startsWith('#'))
-   hash = hash.slice(1);
-  const hEntries = decodeURIComponent(hash).split(';');
-  let targetURL = false;
-  let filePath = false;
-  for (let i = 0; i < hEntries.length; i++)
-  {
-   if (!hEntries[i].includes('='))
-    continue;
-   const hKey = hEntries[i].slice(0, hEntries[i].indexOf('='));
-   const hVal = hEntries[i].slice(hEntries[i].indexOf('=') + 1);
-   if (hKey === 'decdnT')
-    targetURL = decdn_URITools.makeURI(hVal);
-   if (hKey === 'decdnF')
-    filePath = hVal;
-  }
-  if (!targetURL || !filePath)
-   return false;
-  const rTarget = decdn_Parser.process(targetURL);
-  if (!rTarget)
-   return false;
-  if (!rTarget.hasOwnProperty('path'))
-   return false;
-  const aPath = rTarget.path.split('/');
-  aPath.pop();
-  aPath.push(...filePath.split('/'));
-  for (let i = aPath.length - 1; i >= 0; i--)
-  {
-   if (aPath[i] === '.')
-   {
-    aPath.splice(i, 1);
-    continue;
-   }
-   if (aPath[i] === '..')
-   {
-    aPath.splice(i - 1, 2);
-    continue;
-   }
-  }
-  rTarget.path = aPath.join('/');
-  return rTarget;
  },
  _handleMathJax: function(path)
  {

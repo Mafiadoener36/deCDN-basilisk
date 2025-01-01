@@ -88,7 +88,7 @@ var decdn_Interceptor = {
    if (!!dURIs.root && decdn_Interceptor._getBypass(dURIs.root.asciiHost))
     return;
 
-   if (!decdn_Archive.scripts.mappings['cdn'].hasOwnProperty(dURIs.file.asciiHost) && !dURIs.file.asciiSpec.includes(';decdnF='))
+   if (!decdn_Archive.scripts.mappings['cdn'].hasOwnProperty(dURIs.file.asciiHost))
     return;
 
    const rTarget = decdn_Parser.process(dURIs.file);
