@@ -1047,13 +1047,10 @@ var decdn_Overlay = {
      {
       const lblVer = document.createElement('label');
       lblVer.setAttribute('class', 'decdn-resource-version');
-      if (info.intercept[r].versionDelivered !== 'latest')
-      {
-       if (info.intercept[r].versionRequested === 'latest' || info.intercept[r].versionDelivered === info.intercept[r].versionRequested)
-        lblVer.setAttribute('value', 'v' + info.intercept[r].versionDelivered);
-       else
-        lblVer.setAttribute('value', 'v' + info.intercept[r].versionRequested + ' -> v' + info.intercept[r].versionDelivered);
-      }
+      if (info.intercept[r].versionRequested === 'latest' || info.intercept[r].versionDelivered === info.intercept[r].versionRequested)
+       lblVer.setAttribute('value', 'v' + info.intercept[r].versionDelivered);
+      else
+       lblVer.setAttribute('value', 'v' + info.intercept[r].versionRequested + ' -> v' + info.intercept[r].versionDelivered);
       hbRes.appendChild(lblVer);
      }
 

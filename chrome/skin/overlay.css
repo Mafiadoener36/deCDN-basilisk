@@ -211,7 +211,7 @@ toolbar[iconsize="small"] #decdn-button.download
 }
 .decdn-resource-group image
 {
- margin: 4px;
+ margin: 2px;
  padding: 0;
 }
 .decdn-resource-group label
@@ -227,7 +227,7 @@ toolbar[iconsize="small"] #decdn-button.download
 {
  padding: 3px;
  padding-bottom: 0;
- -moz-padding-start: 24px;
+ -moz-padding-start: 28px;
  margin: 0;
 }
 .decdn-resource-version
