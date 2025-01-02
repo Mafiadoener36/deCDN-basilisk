@@ -1034,15 +1034,13 @@ var decdn_Overlay = {
      hbRes.setAttribute('align', 'center');
 
      const lblRes = document.createElement('label');
+     lblRes.setAttribute('crop', 'center');
      let sScript = decdn_Overlay._extractFilenameFromPath(info.intercept[r].path);
      if (decdn_Archive.scripts.ListOfFiles.hasOwnProperty(sScript))
       sScript = decdn_Archive.scripts.ListOfFiles[sScript];
      lblRes.setAttribute('value', sScript);
+     lblRes.setAttribute('flex', '1');
      hbRes.appendChild(lblRes);
-
-     const padVer = document.createElement('spacer');
-     padVer.setAttribute('flex', '1');
-     hbRes.appendChild(padVer);
 
      if (info.intercept[r].versionDelivered !== 'latest')
      {
@@ -1111,10 +1109,12 @@ var decdn_Overlay = {
      hbRes.setAttribute('align', 'center');
 
      const lblRes = document.createElement('label');
+     lblRes.setAttribute('crop', 'center');
      let sScript = decdn_Overlay._extractFilenameFromPath(info.block[r].path);
      if (decdn_Archive.scripts.ListOfFiles.hasOwnProperty(sScript))
       sScript = decdn_Archive.scripts.ListOfFiles[sScript];
      lblRes.setAttribute('value', sScript);
+     lblRes.setAttribute('flex', '1');
      hbRes.appendChild(lblRes);
 
      vbResG.appendChild(hbRes);
@@ -1173,10 +1173,12 @@ var decdn_Overlay = {
      hbRes.setAttribute('align', 'center');
 
      const lblRes = document.createElement('label');
+     lblRes.setAttribute('crop', 'center');
      let sScript = decdn_Overlay._extractFilenameFromPath(info.bypass[r].path);
      if (decdn_Archive.scripts.ListOfFiles.hasOwnProperty(sScript))
       sScript = decdn_Archive.scripts.ListOfFiles[sScript];
      lblRes.setAttribute('value', sScript);
+     lblRes.setAttribute('flex', '1');
      hbRes.appendChild(lblRes);
 
      vbResG.appendChild(hbRes);
