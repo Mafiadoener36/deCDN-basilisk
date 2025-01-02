@@ -21,7 +21,7 @@
    </hbox>
    <description id="decdn-tooltip-refresh" class="decdn-refresh-notice" />
    <separator />
-   <vbox id="ttCDNs" />
+   <vbox id="ttCDNs" flex="1" />
   </tooltip>
   <panel id="decdn-panel" orient="vertical" noautohide="false"
    onpopupshowing="document.getElementById('decdn-button').removeAttribute('tooltip');"
@@ -35,7 +35,7 @@
    </hbox>
    <description id="decdn-panel-refresh" class="decdn-refresh-notice" />
    <separator />
-   <vbox id="pnlCDNs" />
+   <vbox id="pnlCDNs" flex="1" />
   </panel>
  </window>
  <toolbarbutton id="decdn-button"

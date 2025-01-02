@@ -64,6 +64,7 @@ toolbar[iconsize="small"] #decdn-button.download
  width: 24em;
  white-space: normal;
  word-break: normal;
+ max-height: 80ex;
 }
 .decdn-title-hbox
 {
@@ -78,6 +79,11 @@ toolbar[iconsize="small"] #decdn-button.download
 {
  font-size: 200%;
  font-family: serif;
+}
+#ttCDNs,
+#pnlCDNs
+{
+ overflow-y: auto;
 }
 
 .decdn-toggle
