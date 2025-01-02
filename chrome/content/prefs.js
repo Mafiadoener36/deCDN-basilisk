@@ -667,6 +667,9 @@ var decdn_Prefs = {
  },
  init: async function()
  {
+  document.getElementById('tabCDNs').collapsed = true;
+  document.getElementById('lblDowngradeDesc1').collapsed = false;
+  document.getElementById('lblDowngradeDesc2').collapsed = true;
   document.getElementById('lblBranchChanged').setAttribute('style', 'visibility: hidden;');
 
   const cmbSiteScope = document.getElementById('cmbSiteScope');
@@ -725,7 +728,11 @@ var decdn_Prefs = {
    break;
   }
 
-  document.getElementById('chkBlockMissing').checked = hostSpecial || Object.keys(cdnList).length > 0;
+  const hasSpecial = hostSpecial || Object.keys(cdnList).length > 0;
+  document.getElementById('chkBlockMissing').checked = hasSpecial;
+  document.getElementById('tabCDNs').collapsed = !hasSpecial;
+  document.getElementById('lblDowngradeDesc1').collapsed = hasSpecial;
+  document.getElementById('lblDowngradeDesc2').collapsed = !hasSpecial;
 
   decdn_Prefs.mCDNView.populateHostList(cdnList);
 
