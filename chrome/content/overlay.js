@@ -1035,9 +1035,7 @@ var decdn_Overlay = {
 
      const lblRes = document.createElement('label');
      lblRes.setAttribute('crop', 'center');
-     let sScript = decdn_Overlay._extractFilenameFromPath(info.intercept[r].path);
-     if (decdn_Archive.scripts.ListOfFiles.hasOwnProperty(sScript))
-      sScript = decdn_Archive.scripts.ListOfFiles[sScript];
+     const sScript = decdn_Overlay._extractFilenameFromPath(info.intercept[r].path);
      lblRes.setAttribute('value', sScript);
      lblRes.setAttribute('tooltiptext', info.intercept[r].path);
      lblRes.setAttribute('flex', '1');
@@ -1111,9 +1109,7 @@ var decdn_Overlay = {
 
      const lblRes = document.createElement('label');
      lblRes.setAttribute('crop', 'center');
-     let sScript = decdn_Overlay._extractFilenameFromPath(info.block[r].path);
-     if (decdn_Archive.scripts.ListOfFiles.hasOwnProperty(sScript))
-      sScript = decdn_Archive.scripts.ListOfFiles[sScript];
+     const sScript = decdn_Overlay._extractFilenameFromPath(info.block[r].path);
      lblRes.setAttribute('value', sScript);
      lblRes.setAttribute('tooltiptext', info.block[r].path);
      lblRes.setAttribute('flex', '1');
@@ -1176,9 +1172,7 @@ var decdn_Overlay = {
 
      const lblRes = document.createElement('label');
      lblRes.setAttribute('crop', 'center');
-     let sScript = decdn_Overlay._extractFilenameFromPath(info.bypass[r].path);
-     if (decdn_Archive.scripts.ListOfFiles.hasOwnProperty(sScript))
-      sScript = decdn_Archive.scripts.ListOfFiles[sScript];
+     const sScript = decdn_Overlay._extractFilenameFromPath(info.bypass[r].path);
      lblRes.setAttribute('value', sScript);
      lblRes.setAttribute('tooltiptext', info.bypass[r].path);
      lblRes.setAttribute('flex', '1');
@@ -1523,9 +1517,24 @@ var decdn_Overlay = {
  _extractFilenameFromPath: function(sPath)
  {
   const aPath = sPath.split('/');
-  const aFile = aPath[aPath.length - 1];
+  let aFile = aPath[aPath.length - 1];
   if (aFile === '')
    return aPath[1];
+  if (aFile === '+esm')
+  {
+   let sDir = aPath[aPath.length - 2];
+   if (sDir.includes('@'))
+    sDir = sDir.slice(0, sDir.indexOf('@'));
+   return sDir;
+  }
+  if (decdn_Archive.scripts.ListOfFiles.hasOwnProperty(aFile))
+   return decdn_Archive.scripts.ListOfFiles[aFile];
+  if (aFile.includes('.min'))
+   aFile = aFile.replaceAll('.min', '');
+  if (aFile.includes('.umd'))
+   aFile = aFile.replaceAll('.umd', '');
+  if (aPath[0] === 'resources')
+   return aPath[1] + '/' + aFile;
   return aFile;
  },
  _getAsciiHost: function(url)
