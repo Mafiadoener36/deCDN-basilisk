@@ -906,6 +906,7 @@ var decdn_Prefs = {
  },
  _defBranch: function()
  {
+  const cmbBranch = document.getElementById('cmbBranch');
   cmbBranch.removeAllItems();
   cmbBranch.appendItem(decdn_Prefs._branch, decdn_Prefs._branch);
   cmbBranch.value = decdn_Prefs._branch;
