@@ -428,6 +428,7 @@ var decdn_Overlay = {
   const h = decdn_Overlay._getHostOfTab(tabID);
   if (!h)
   {
+   document.getElementById('decdn-panel').hidePopup();
    status.classList.remove(decdn_CONSTS.CLASS.INTERCEPT, decdn_CONSTS.CLASS.BYPASS, decdn_CONSTS.CLASS.REFRESH_INTERCEPT, decdn_CONSTS.CLASS.REFRESH_BYPASS, decdn_CONSTS.CLASS.DOWNLOAD);
    status.classList.add(decdn_CONSTS.CLASS.HIDDEN);
    return;
