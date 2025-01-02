@@ -1039,6 +1039,7 @@ var decdn_Overlay = {
      if (decdn_Archive.scripts.ListOfFiles.hasOwnProperty(sScript))
       sScript = decdn_Archive.scripts.ListOfFiles[sScript];
      lblRes.setAttribute('value', sScript);
+     lblRes.setAttribute('tooltiptext', info.intercept[r].path);
      lblRes.setAttribute('flex', '1');
      hbRes.appendChild(lblRes);
 
@@ -1114,6 +1115,7 @@ var decdn_Overlay = {
      if (decdn_Archive.scripts.ListOfFiles.hasOwnProperty(sScript))
       sScript = decdn_Archive.scripts.ListOfFiles[sScript];
      lblRes.setAttribute('value', sScript);
+     lblRes.setAttribute('tooltiptext', info.block[r].path);
      lblRes.setAttribute('flex', '1');
      hbRes.appendChild(lblRes);
 
@@ -1178,6 +1180,7 @@ var decdn_Overlay = {
      if (decdn_Archive.scripts.ListOfFiles.hasOwnProperty(sScript))
       sScript = decdn_Archive.scripts.ListOfFiles[sScript];
      lblRes.setAttribute('value', sScript);
+     lblRes.setAttribute('tooltiptext', info.bypass[r].path);
      lblRes.setAttribute('flex', '1');
      hbRes.appendChild(lblRes);
 
