@@ -67,7 +67,7 @@ var decdn_Interceptor = {
     return;
 
    if (!!wndInf.tabID && !dURIs.document && !dURIs.root && (channel.loadFlags & channel.LOAD_INITIAL_DOCUMENT_URI) === channel.LOAD_INITIAL_DOCUMENT_URI)
-    decdn_Overlay.tabReset(wndInf.tabID);
+    decdn_Overlay.tabReset(wndInf.tabID, dURIs.file);
 
    if (decdn_Interceptor.BYPASSED.SCHEME.includes(dURIs.file.scheme))
     return;

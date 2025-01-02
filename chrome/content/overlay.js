@@ -60,10 +60,10 @@ var decdn_Overlay = {
   }
  },
 
- tabReset: function(tabID)
+ tabReset: function(tabID, uri)
  {
   delete decdn_TabData[tabID];
-  decdn_Overlay._tabUpdate(tabID);
+  decdn_Overlay._tabUpdate(tabID, uri);
  },
  tabSetBypass: function(tabID)
  {
@@ -350,7 +350,7 @@ var decdn_Overlay = {
   decdn_Overlay.iconUpdate();
  },
 
- _tabUpdate: function(tabID)
+ _tabUpdate: function(tabID, knownURI = false)
  {
   if (!!decdn_Overlay._downloadState)
   {
@@ -379,7 +379,6 @@ var decdn_Overlay = {
   }
   if (!decdn_Overlay._isSelTabID(tabID))
    return;
-  //decdn_Overlay.iconUpdate();
   if (!decdn_Archive.scripts.hasOwnProperty('mappings'))
   {
    if (!decdn_TabData.hasOwnProperty(tabID))
@@ -396,7 +395,7 @@ var decdn_Overlay = {
    return;
   }
 
-  if (!decdn_TabData.hasOwnProperty(tabID))
+  if (!decdn_TabData.hasOwnProperty(tabID) && !!knownURI)
   {
    decdn_TabData[tabID] = {
     action: decdn_CONSTS.ACTION.TAKEN.INTERCEPT,
@@ -405,7 +404,18 @@ var decdn_Overlay = {
     resources: []
    };
    if (decdn_Overlay._hasAdvanced())
-    decdn_TabData[tabID].reason = decdn_Overlay._getTabBypass(tabID);
+   {
+    if (knownURI.asciiHost === '')
+     decdn_TabData[tabID].reason = decdn_Overlay._getTabBypass(tabID);
+    else
+     decdn_TabData[tabID].reason = decdn_Overlay._getSourceBypass(knownURI.asciiHost);
+   }
+  }
+
+  if (!decdn_TabData.hasOwnProperty(tabID))
+  {
+   decdn_Overlay.iconUpdate();
+   return;
   }
 
   decdn_Overlay._ttRender(tabID);
