@@ -1217,6 +1217,7 @@ var decdn_Overlay = {
   const lblRefresh = document.getElementById(elID);
   if (!lblRefresh)
    return;
+  lblRefresh.removeAttribute('style');
   if (!!decdn_Overlay._downloadState)
   {
    lblRefresh.collapsed = true;
@@ -1246,6 +1247,7 @@ var decdn_Overlay = {
      lblRefresh.textContent = 'Unknown Pending Action: ' + decdn_TabData[tabID].reaction;
    }
    lblRefresh.collapsed = false;
+   lblRefresh.setAttribute('style', 'height: ' + lblRefresh.boxObject.height + 'px;');
    return;
   }
 
@@ -1280,6 +1282,7 @@ var decdn_Overlay = {
   {
    lblRefresh.textContent = sRef;
    lblRefresh.collapsed = false;
+   lblRefresh.setAttribute('style', 'height: ' + lblRefresh.boxObject.height + 'px;');
    return;
   }
 
