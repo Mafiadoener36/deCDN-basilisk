@@ -86,7 +86,7 @@ var decdn_Overlay = {
     resources: []
    };
    if (decdn_Overlay._hasAdvanced())
-    decdn_TabData[tabID].reason = decdn_Overlay._getSourceBypass(res.source);
+    decdn_TabData[tabID].reason = decdn_Overlay._getTabBypass(tabID);
   }
   res.action = decdn_CONSTS.ACTION.TAKEN.INTERCEPT;
   res.reason = decdn_CONSTS.ACTION.OPTION.INTERCEPT;
@@ -119,7 +119,7 @@ var decdn_Overlay = {
     resources: []
    };
    if (decdn_Overlay._hasAdvanced())
-    decdn_TabData[tabID].reason = decdn_Overlay._getSourceBypass(dURI.asciiHost);
+    decdn_TabData[tabID].reason = decdn_Overlay._getTabBypass(tabID);
   }
   const res = {
    action: decdn_CONSTS.ACTION.TAKEN.BLOCK,
@@ -154,7 +154,7 @@ var decdn_Overlay = {
     resources: []
    };
    if (decdn_Overlay._hasAdvanced())
-    decdn_TabData[tabID].action = decdn_Overlay._getSourceBypass(dURI.asciiHost);
+    decdn_TabData[tabID].reason = decdn_Overlay._getTabBypass(tabID);
   }
   const res = {
    action: decdn_CONSTS.ACTION.TAKEN.BYPASS,
@@ -405,11 +405,7 @@ var decdn_Overlay = {
     resources: []
    };
    if (decdn_Overlay._hasAdvanced())
-   {
-    const h = decdn_Overlay._getHostOfTab(tabID);
-    if (!!h)
-     decdn_TabData[tabID].reason = decdn_Overlay._getSourceBypass(h);
-   }
+    decdn_TabData[tabID].reason = decdn_Overlay._getTabBypass(tabID);
   }
 
   decdn_Overlay._ttRender(tabID);
@@ -1421,6 +1417,13 @@ var decdn_Overlay = {
    catch(ex){}
   }
   return false;
+ },
+ _getTabBypass: function(tabID)
+ {
+  const h = decdn_Overlay._getHostOfTab(tabID);
+  if (!h)
+   return decdn_CONSTS.ACTION.OPTION.INTERCEPT;
+  return decdn_Overlay._getSourceBypass(h);
  },
  _getSourceBypass: function(domain)
  {
