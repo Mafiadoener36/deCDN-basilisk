@@ -1361,7 +1361,11 @@ var decdn_Overlay = {
     if (brwTabID !== tabID)
      continue;
     if (brw.registeredOpenURI)
-     return decdn_Overlay._getAsciiHost(brw.contentWindow.location);
+    {
+     if (brw.registeredOpenURI.asciiHost === '')
+      return false;
+     return brw.registeredOpenURI.asciiHost;
+    }
     if (!brw.contentWindow)
      continue;
     if (!brw.contentWindow.location)
@@ -1545,6 +1549,8 @@ var decdn_Overlay = {
   try
   {
    const u = io.newURI(url.href, null, null);
+   if (u.asciiHost === '')
+    return false;
    return u.asciiHost;
   }
   catch(ex)
