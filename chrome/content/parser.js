@@ -76,7 +76,7 @@ var decdn_Parser = {
    tPath = tPath.replaceAll(tmpVer, reqVer);
    let myVer = decdn_Archive.scripts.targets.setLastVersion(tPath, reqVer);
    if (myVer === '')
-    return false;
+    break;
    tPath = tPath.replaceAll(reqVer, myVer);
    let wantVer = false;
    if (reqVer === null)
@@ -91,7 +91,7 @@ var decdn_Parser = {
    {
     tPath = decdn_Parser._getPathOfBundle(path, tPath, sBundle);
     if (!tPath)
-     return false;
+     break;
     if (sBundle === 'vex (Bundle)' && !tPath.endsWith('.min.css') && tPath.endsWith('.css'))
      tPath = tPath.replace('.css', '.min.css');
     break;
