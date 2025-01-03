@@ -743,6 +743,7 @@ var decdn_Prefs = {
   if (document.getElementById('prefCommit').hasUserValue)
    decdn_Prefs._commit = document.getElementById('prefCommit').valueFromPreferences;
 
+  const lnkArchive = document.getElementById('lnkArchive');
   if (!!decdn_Prefs._commit && decdn_Prefs._commit.length === 40)
   {
    let tLinkBase = document.getElementById('prefLinkBase').defaultValue;
@@ -752,17 +753,17 @@ var decdn_Prefs = {
    if (document.getElementById('prefLinkGraph').hasUserValue)
     tLinkGraph = document.getElementById('prefLinkGraph').valueFromPreferences;
    tLinkGraph = tLinkGraph.replaceAll('%COMMIT%', decdn_Prefs._commit);
-   document.getElementById('lnkArchive').setAttribute('class', 'text-link');
-   document.getElementById('lnkArchive').setAttribute('value', decdn_Prefs._commit.slice(0, 10));
-   document.getElementById('lnkArchive').setAttribute('href', tLinkBase + tLinkGraph);
-   document.getElementById('lnkArchive').setAttribute('tooltiptext', tLinkBase + tLinkGraph);
+   lnkArchive.setAttribute('class', 'text-link');
+   lnkArchive.setAttribute('value', decdn_Prefs._commit.slice(0, 10));
+   lnkArchive.setAttribute('href', tLinkBase + tLinkGraph);
+   lnkArchive.setAttribute('tooltiptext', tLinkBase + tLinkGraph);
   }
   else
   {
-   document.getElementById('lnkArchive').removeAttribute('class');
-   document.getElementById('lnkArchive').setAttribute('value', 'N/A');
-   document.getElementById('lnkArchive').removeAttribute('href');
-   document.getElementById('lnkArchive').removeAttribute('tooltiptext');
+   lnkArchive.removeAttribute('class');
+   lnkArchive.setAttribute('value', 'N/A');
+   lnkArchive.removeAttribute('href');
+   lnkArchive.removeAttribute('tooltiptext');
   }
 
   let sBranch = document.getElementById('prefBranch').defaultValue;
