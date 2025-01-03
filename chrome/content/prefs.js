@@ -1043,5 +1043,21 @@ var decdn_Prefs = {
    return;
   brw.decdn_Archive.erase();
   brw.decdn_Archive.load(newBranch);
+ },
+ resetArchive: function()
+ {
+  const dlg = Components.classes['@mozilla.org/embedcomp/prompt-service;1'].getService(Components.interfaces.nsIPromptService);
+  const chk = {};
+  const r = dlg.confirmEx(window, decdn_Prefs._locale.GetStringFromName('reset.title'), decdn_Prefs._locale.GetStringFromName('reset.message'), dlg.STD_YES_NO_BUTTONS, null, null, null, null, chk);
+  if (r !== 0)
+   return;
+  decdn_Prefs._branch = false;
+  document.getElementById('lblBranchChanged').removeAttribute('style');
+  decdn_Prefs._commit = false;
+  const lnkArchive = document.getElementById('lnkArchive');
+  lnkArchive.removeAttribute('class');
+  lnkArchive.setAttribute('value', 'N/A');
+  lnkArchive.removeAttribute('href');
+  lnkArchive.removeAttribute('tooltiptext');
  }
 };

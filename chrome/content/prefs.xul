@@ -64,11 +64,12 @@
             <label id="lblBranchChanged" value="&branch.changed;" />
            </hbox>
           </row>
-          <row>
+          <row align="center">
            <label control="lnkArchive" value="&commit.label;" />
-           <hbox>
+           <hbox align="center">
             <label id="lnkArchive" value="N/A" />
             <spacer flex="1" />
+            <button id="cmdReset" label="&reset.label;" oncommand="decdn_Prefs.resetArchive();" />
            </hbox>
           </row>
          </rows>

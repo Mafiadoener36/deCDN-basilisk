@@ -13,6 +13,7 @@
 <!ENTITY branch.label             "Repo Branch:">
 <!ENTITY branch.changed           "(Requires Archive Re-Download)">
 <!ENTITY commit.label             "Repo Commit:">
+<!ENTITY reset.label              "Erase/Reset">
 
 <!ENTITY group.cdn                "CDN Server Access">
 
