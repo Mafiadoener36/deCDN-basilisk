@@ -223,7 +223,7 @@ var decdn_Parser = {
    if (fLen === 0)
     continue;
    if (item.isFile())
-    decdn_Parser.jaxLists.push(item.persistentDescriptor.slice(fLen + 1));
+    decdn_Parser.jaxLists.push(item.persistentDescriptor.slice(fLen + 1).replaceAll('\\', '/'));
   }
  }
 };
