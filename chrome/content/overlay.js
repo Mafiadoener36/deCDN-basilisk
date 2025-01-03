@@ -585,6 +585,11 @@ var decdn_Overlay = {
 
  _ttRender: function(tabID)
  {
+  if (!decdn_TabData.hasOwnProperty(tabID))
+  {
+   decdn_Overlay._ttMsg(decdn_CONSTS.ICON.TITLE.IDLE, decdn_Overlay._locale.GetStringFromName('notice.empty'));
+   return;
+  }
   decdn_Overlay._showRefreshNotice(tabID, 'decdn-tooltip-refresh');
 
   if (decdn_TabData[tabID].resources.length > 0)
@@ -802,6 +807,11 @@ var decdn_Overlay = {
 
  _pnlRender: function(tabID)
  {
+  if (!decdn_TabData.hasOwnProperty(tabID))
+  {
+   decdn_Overlay._pnlMsg(decdn_CONSTS.ICON.TITLE.IDLE, decdn_Overlay._locale.GetStringFromName('notice.empty'));
+   return;
+  }
   decdn_Overlay._showRefreshNotice(tabID, 'decdn-panel-refresh');
 
   if (!decdn_Archive.scripts.hasOwnProperty('mappings'))
@@ -1229,6 +1239,11 @@ var decdn_Overlay = {
    return;
   }
   if (!decdn_Archive.scripts.hasOwnProperty('mappings'))
+  {
+   lblRefresh.collapsed = true;
+   return;
+  }
+  if (!decdn_TabData.hasOwnProperty(tabID))
   {
    lblRefresh.collapsed = true;
    return;
