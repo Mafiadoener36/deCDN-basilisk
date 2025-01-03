@@ -80,10 +80,13 @@ var decdn_Interceptor = {
 
    if (!dURIs.document)
     return;
-   if (decdn_Interceptor.BYPASSED.SCHEME.includes(dURIs.document.scheme))
-    return;
-   if (decdn_Interceptor._getBypass(dURIs.document.asciiHost))
-    return;
+   if (dURIs.document.asciiSpec !== 'about:srcdoc')
+   {
+    if (decdn_Interceptor.BYPASSED.SCHEME.includes(dURIs.document.scheme))
+     return;
+    if (decdn_Interceptor._getBypass(dURIs.document.asciiHost))
+     return;
+   }
 
    if (!!dURIs.root && decdn_Interceptor._getBypass(dURIs.root.asciiHost))
     return;
