@@ -98,6 +98,17 @@ var decdn_Interceptor = {
    {
     if (dURIs.file.asciiSpec.match(/fonts\.(googleapis|gstatic)\.com\/(?!.*(Material\+Icons|materialicons).*).*/))
     {
+     let allowGDomains = JSON.parse(decdn_Interceptor._Defs.getCharPref('googleDomains'));
+     if (decdn_Interceptor._Prefs.prefHasUserValue('googleDomains'))
+     {
+      try
+      {
+       allowGDomains = JSON.parse(decdn_Interceptor._Prefs.getCharPref('googleDomains'));
+      }
+      catch (ex) {}
+     }
+     if (allowGDomains.includes(decdn_Interceptor._getDomain(dURIs.root.asciiHost)) || allowGDomains.includes(decdn_Interceptor._getDomain(dURIs.document.asciiHost)))
+      return;
      let allowGFonts = JSON.parse(decdn_Interceptor._Defs.getCharPref('fontDomains'));
      if (decdn_Interceptor._Prefs.prefHasUserValue('fontDomains'))
      {
@@ -433,6 +444,12 @@ var decdn_Interceptor = {
   {
    return false;
   }
+ },
+ _getDomain: function(s)
+ {
+  if (s.slice(0, 4) === 'www.')
+   s = s.slice(4);
+  return s;
  },
  _getAdvDomain: function(dURIs)
  {
