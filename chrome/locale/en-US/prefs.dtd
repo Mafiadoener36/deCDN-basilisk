@@ -25,11 +25,14 @@
 <!ENTITY blockmissing.descA       "Gives you control over which CDN connections are allowed or blocked.">
 <!ENTITY blockmissing.descB       "Warning: Blocking scripts can easily break websites. Use with care!">
 
+<!ENTITY fonts.label              "Block Google Fonts">
+
 <!ENTITY preload.label            "Preload page content">
 <!ENTITY preload.spec.label       "About the &lt;link rel=&quot;preload&quot;&gt; standard:">
 <!ENTITY preload.spec.link        "MDN Article">
 <!ENTITY preload.issue.label      "Pale Moon's implementation of preloading:">
 <!ENTITY preload.issue.link       "UXP Issue">
+
 
 <!ENTITY tabs.hosts               "Ignore Hosts">
 
@@ -42,6 +45,11 @@
 <!ENTITY hostaddress.label        "Add Host:">
 
 <!ENTITY hosts.scope.desc         "Note: Entries in the &quot;Block CDNs&quot; tab do not apply to these hosts.">
+
+
+<!ENTITY tabs.fonts               "Google Fonts">
+
+<!ENTITY fonts.desc               "Google Fonts will be allowed to load on these hosts.">
 
 
 <!ENTITY tabs.cdns                "Block CDNs">

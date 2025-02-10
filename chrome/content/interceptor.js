@@ -91,6 +91,70 @@ var decdn_Interceptor = {
    if (!!dURIs.root && decdn_Interceptor._getBypass(dURIs.root.asciiHost))
     return;
 
+   let blockGFonts = decdn_Interceptor._Defs.getBoolPref('googlefonts');
+   if (decdn_Interceptor._Prefs.prefHasUserValue('googlefonts'))
+    blockGFonts = decdn_Interceptor._Prefs.getBoolPref('googlefonts');
+   if (blockGFonts)
+   {
+    if (dURIs.file.asciiSpec.match(/fonts\.(googleapis|gstatic)\.com\/(?!.*(Material\+Icons|materialicons).*).*/))
+    {
+     let allowGDomains = JSON.parse(decdn_Interceptor._Defs.getCharPref('googleDomains'));
+     if (decdn_Interceptor._Prefs.prefHasUserValue('googleDomains'))
+     {
+      try
+      {
+       allowGDomains = JSON.parse(decdn_Interceptor._Prefs.getCharPref('googleDomains'));
+      }
+      catch (ex) {}
+     }
+     if (allowGDomains.includes(decdn_Interceptor._getDomain(dURIs.root.asciiHost)) || allowGDomains.includes(decdn_Interceptor._getDomain(dURIs.document.asciiHost)))
+      return;
+     let allowGFonts = JSON.parse(decdn_Interceptor._Defs.getCharPref('fontDomains'));
+     if (decdn_Interceptor._Prefs.prefHasUserValue('fontDomains'))
+     {
+      try
+      {
+       allowGFonts = JSON.parse(decdn_Interceptor._Prefs.getCharPref('fontDomains'));
+      }
+      catch (ex) {}
+     }
+     if (allowGFonts.includes(dURIs.root.asciiHost) || allowGFonts.includes(dURIs.document.asciiHost))
+     {
+      if (!!wndInf.tabID)
+       decdn_Overlay.tabAddBypassed(wndInf.tabID, dURIs.file);
+      return;
+     }
+     if (!!wndInf.tabID)
+      decdn_Overlay.tabAddBlocked(wndInf.tabID, dURIs.file);
+     const fontRedir = decdn_Data.getRedirectionURI('resources/google-fonts-placeholder.css');
+     if (!fontRedir)
+      channel.cancel(Components.results.NS_ERROR_NOT_AVAILABLE);
+     else
+     {
+      if (!!wndInf.browser)
+      {
+       if (!wndInf.browser.decdnCacheID)
+        wndInf.browser.decdnCacheID = crypto.randomUUID();
+       if (!decdn_Interceptor.cache.hasOwnProperty(wndInf.browser.decdnCacheID))
+       {
+        decdn_Interceptor.cache[wndInf.browser.decdnCacheID] = {};
+        wndInf.browser.addEventListener('unload',
+         function()
+         {
+          delete decdn_Interceptor.cache[wndInf.browser.decdnCacheID];
+          delete wndInf.browser.decdnCacheID;
+         },
+         {capture: true, passive: true, once: true}
+        );
+       }
+       decdn_Interceptor.cache[wndInf.browser.decdnCacheID][dURIs.file.asciiSpec] = {redir: fontRedir};
+      }
+      channel.redirectTo(fontRedir);
+     }
+     return;
+    }
+   }
+
    if (!decdn_Archive.scripts.mappings['cdn'].hasOwnProperty(dURIs.file.asciiHost))
     return;
 
@@ -380,6 +444,12 @@ var decdn_Interceptor = {
   {
    return false;
   }
+ },
+ _getDomain: function(s)
+ {
+  if (s.slice(0, 4) === 'www.')
+   s = s.slice(4);
+  return s;
  },
  _getAdvDomain: function(dURIs)
  {

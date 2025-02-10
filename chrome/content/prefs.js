@@ -665,8 +665,228 @@ var decdn_Prefs = {
    }
   }
  },
+ mFontView:
+ {
+  fontList: [],
+  iconList: {},
+  sortCol: 'colFontHost',
+  sortOrder: 1,
+  get rowCount() { return this.fontList.length; },
+  get _hostKeys()
+  {
+   let kList = JSON.parse(JSON.stringify(this.fontList));
+   kList.sort();
+   if (this.sortOrder < 0)
+    kList.reverse();
+   return kList;
+  },
+  draw: function()
+  {
+   const lstFonts = document.getElementById('lstFonts');
+
+   const selFonts = [];
+   for (let i = 0; i < lstFonts.selectedItems.length; i++)
+   {
+    selFonts.push(lstFonts.selectedItems[i].getAttribute('value'));
+   }
+
+   while (lstFonts.getRowCount() > 0)
+   {
+    lstFonts.removeItemAt(0);
+   }
+   for (let i = 0; i < this.rowCount; i++)
+   {
+    const sHost = this._hostKeys[i];
+
+    const row = document.createElement('listitem');
+    row.setAttribute('allowevents', true);
+    row.setAttribute('value', sHost);
+
+    const cellSite = document.createElement('listcell');
+    cellSite.setAttribute('label', sHost);
+    cellSite.setAttribute('class', 'listcell-iconic');
+    if (this.iconList.hasOwnProperty(sHost))
+     cellSite.setAttribute('image', this.iconList[sHost]);
+    else
+     cellSite.setAttribute('image', 'moz-anno:favicon:about:blank');
+    row.appendChild(cellSite);
+
+    lstFonts.appendChild(row);
+    if (selFonts.includes(sHost))
+    {
+     lstFonts.ensureElementIsVisible(row);
+     lstFonts.addItemToSelection(row);
+    }
+   }
+   if (this.rowCount > 0)
+    lstFonts.scrollToIndex(0);
+
+   if (this.sortOrder > 0)
+    document.getElementById('colFontHostHdr').setAttribute('sortDirection', 'descending');
+   else
+    document.getElementById('colFontHostHdr').setAttribute('sortDirection', 'ascending');
+  },
+  genIconList: async function()
+  {
+   this.iconList = {};
+   for (let i = 0; i < this.rowCount; i++)
+   {
+    this.iconList[this.fontList[i]] = await this._getIcon(this.fontList[i]);
+   }
+  },
+  _getIcon: function(host, scheme = 'https')
+  {
+   return new Promise(
+    function(resolve)
+    {
+     const uri = decdn_Prefs._svcIO.newURI(scheme + '://' + host, null, null);
+     decdn_Prefs._svcIco.getFaviconURLForPage(uri,
+      function(aURI)
+      {
+       if (aURI === null)
+       {
+        if (scheme === 'http')
+        {
+         resolve('moz-anno:favicon:about:blank');
+         return;
+        }
+        resolve(decdn_Prefs.mHostView._getIcon(host, 'http'));
+        return;
+       }
+       const lnk = decdn_Prefs._svcIco.getFaviconLinkForIcon(aURI);
+       if (lnk === null)
+       {
+        if (scheme === 'http')
+        {
+         resolve('moz-anno:favicon:about:blank');
+         return;
+        }
+        resolve(decdn_Prefs.mHostView._getIcon(host, 'http'));
+        return;
+       }
+       resolve(lnk.asciiSpec);
+      }
+     );
+    }
+   );
+  },
+  onSelAll: function(ev)
+  {
+   const lstFonts = document.getElementById('lstFonts');
+   if (ev.target.checked)
+    lstFonts.selectAll();
+   else
+    lstFonts.clearSelection();
+  },
+  onListSelected: function()
+  {
+   document.getElementById('cmdFontRemoveAll').disabled = this.rowCount === 0;
+   if (this.rowCount === 0)
+   {
+    document.getElementById('cmdFontRemove').disabled = true;
+    document.getElementById('chkFontSel').disabled = true;
+    document.getElementById('chkFontSel').checked = false;
+    return;
+   }
+   const lstFonts = document.getElementById('lstFonts');
+   document.getElementById('cmdFontRemove').disabled = lstFonts.selectedCount === 0;
+   document.getElementById('chkFontSel').checked = lstFonts.selectedCount === this.rowCount;
+   document.getElementById('chkFontSel').disabled = false;
+  },
+  onListKeyPress: function(aEvent)
+  {
+   if (aEvent.keyCode === KeyEvent.DOM_VK_DELETE)
+   {
+    document.getElementById('cmdFontRemove').click();
+    aEvent.preventDefault();
+   }
+   if (aEvent.code === 'KeyA' && aEvent.ctrlKey && !aEvent.altKey && !aEvent.metaKey)
+   {
+    if (aEvent.shiftKey)
+     document.getElementById('lstFonts').clearSelection();
+    else
+     document.getElementById('lstFonts').selectAll();
+    aEvent.preventDefault();
+   }
+  },
+  onListSort: function(col)
+  {
+   if (this.sortCol === col)
+    this.sortOrder *= -1;
+   else
+   {
+    this.sortCol = col;
+    this.sortOrder = 1;
+   }
+   this.draw();
+  },
+  onTextInput: function(aSiteField)
+  {
+   document.getElementById('cmdFontBypass').disabled = !aSiteField.value;
+  },
+  onTextKeyPress: function(aEvent)
+  {
+   if (aEvent.keyCode === KeyEvent.DOM_VK_RETURN)
+   {
+    document.getElementById('cmdFontBypass').click();
+    aEvent.preventDefault();
+   }
+  },
+  onAddClick: async function()
+  {
+   const txtSite = document.getElementById('txtFontSite');
+   let host = txtSite.value.replace(/^\s*([-\w]*:\/+)?/, ''); // trim any leading space and scheme
+   host = (host.charAt(0) === '.') ? host.substring(1,host.length) : host;
+   try
+   {
+    const uri = decdn_Prefs._svcIO.newURI('http://' + host, null, null);
+    host = uri.asciiHost;
+   }
+   catch(ex)
+   {
+    return;
+   }
+   if (!this.fontList.includes(host))
+   {
+    this.fontList.push(host);
+    this.iconList[host] = await this._getIcon(host);
+    this.draw();
+   }
+   decdn_Prefs.updatePrefs();
+   txtSite.value = '';
+   txtSite.focus();
+   document.getElementById('cmdFontBypass').disabled = true;
+   document.getElementById('cmdFontRemoveAll').disabled = this.rowCount === 0;
+  },
+  onRemSelClick: function()
+  {
+   document.getElementById('cmdFontRemove').disabled = true;
+   document.getElementById('cmdFontRemoveAll').disabled = true;
+   const lstFonts = document.getElementById('lstFonts');
+   for (let i = 0; i < lstFonts.selectedItems.length; i++)
+   {
+    const host = lstFonts.selectedItems[i].getAttribute('value');
+    this.fontList = this.fontList.filter(function(el){return el !== host;});
+    delete this.iconList[host];
+   }
+   lstFonts.clearSelection();
+   this.draw();
+   document.getElementById('cmdFontRemoveAll').disabled = this.rowCount === 0;
+   decdn_Prefs.updatePrefs();
+  },
+  onRemAllClick: function()
+  {
+   document.getElementById('cmdFontRemove').disabled = true
+   document.getElementById('cmdFontRemoveAll').disabled = true;
+   this.fontList = [];
+   this.iconList = {};
+   this.draw();
+   decdn_Prefs.updatePrefs();
+  }
+ },
  init: async function()
  {
+  decdn_Prefs._updateFonts();
   document.getElementById('tabCDNs').collapsed = true;
   document.getElementById('lblDowngradeDesc1').collapsed = false;
   document.getElementById('lblDowngradeDesc2').collapsed = true;
@@ -740,6 +960,24 @@ var decdn_Prefs = {
 
   decdn_Prefs.mCDNView.updateCheckState();
 
+  document.getElementById('cmdFontBypass').label = decdn_Prefs._locale.GetStringFromName('button.' + decdn_CONSTS.ACTION.OPTION.BYPASS);
+
+  const prefFontDomains = document.getElementById('prefFontDomains');
+  let sFontHosts = prefFontDomains.defaultValue;
+  if (prefFontDomains.hasUserValue)
+   sFontHosts = prefFontDomains.valueFromPreferences;
+  try
+  {
+   decdn_Prefs.mFontView.fontList = JSON.parse(sFontHosts);
+  }
+  catch(ex)
+  {
+   decdn_Prefs.mFontView.fontList = [];
+  }
+  await decdn_Prefs.mFontView.genIconList();
+  decdn_Prefs.mFontView.draw();
+  document.getElementById('cmdFontRemoveAll').disabled = decdn_Prefs.mFontView.rowCount === 0;
+
   decdn_Prefs._updateHash();
   document.getElementById('prefCommit').addEventListener('change', decdn_Prefs._updateHash);
 
@@ -798,6 +1036,11 @@ var decdn_Prefs = {
   document.getElementById('lblDowngradeDesc1').collapsed = b;
   document.getElementById('lblDowngradeDesc2').collapsed = !b;
   window.sizeToContent();
+ },
+ _updateFonts: function()
+ {
+  const b = document.getElementById('chkGoogleFonts').checked;
+  document.getElementById('tabFonts').collapsed = !b;
  },
  _getBrowser: function()
  {
@@ -1012,6 +1255,11 @@ var decdn_Prefs = {
   decdn_Prefs.updatePrefs();
   decdn_Prefs._updateBlocking();
  },
+ onFontsChange: function()
+ {
+  decdn_Prefs.updatePrefs();
+  decdn_Prefs._updateFonts();
+ },
  updatePrefs: function()
  {
   const prefBypass = document.getElementById('prefSitesBypass');
@@ -1039,6 +1287,9 @@ var decdn_Prefs = {
   }
   const prefCDNs = document.getElementById('prefCDNsBlock');
   prefCDNs.value = JSON.stringify(cdnList);
+
+  const prefFonts = document.getElementById('prefFontDomains');
+  prefFonts.value = JSON.stringify(decdn_Prefs.mFontView.fontList);
  },
  onBeforeAccept: function()
  {

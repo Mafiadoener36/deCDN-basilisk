@@ -3,7 +3,8 @@
  min-width: unset;
 }
 
-#lstHosts listcell.listcell-iconic image
+#lstHosts listcell.listcell-iconic image,
+#lstFonts listcell.listcell-iconic image
 {
  height: 16px;
 }

@@ -19,12 +19,15 @@
    <preference id="prefCommit" name="extensions.decdn.repo.commit" type="string" readonly="true" />
    <preference id="prefLinkBase" name="extensions.decdn.repo.url.base" type="string" readonly="true" />
    <preference id="prefLinkGraph" name="extensions.decdn.repo.url.graph" type="string" readonly="true" />
+   <preference id="prefFonts" name="extensions.decdn.googlefonts" type="bool" />
+   <preference id="prefFontDomains" name="extensions.decdn.fontDomains" type="string" />
    <preference id="prefPreload" name="network.preload" type="bool" />
   </preferences>
   <tabbox>
    <tabs>
     <tab label="&tabs.settings;" />
     <tab label="&tabs.hosts;" />
+    <tab id="tabFonts" label="&tabs.fonts;" />
     <tab id="tabCDNs" label="&tabs.cdns;" />
    </tabs>
    <tabpanels>
@@ -101,6 +104,11 @@
          <separator orient="vertical" class="thin" />
          <description>&blockmissing.descB;</description>
         </hbox>
+        <separator />
+        <hbox>
+         <checkbox id="chkGoogleFonts" label="&fonts.label;" preference="prefFonts" oncommand="decdn_Prefs.onFontsChange();" />
+         <spacer flex="1" />
+        </hbox>
        </vbox>
       </groupbox>
       <spacer flex="1" />
@@ -160,6 +168,40 @@
       </hbox>
       <separator class="thin" />
       <description id="lblHostScope">&hosts.scope.desc;</description>
+     </vbox>
+    </tabpanel>
+    <tabpanel>
+     <vbox flex="1">
+      <hbox align="center">
+       <checkbox id="chkFontSel" label="&selectall.label;" oncommand="decdn_Prefs.mFontView.onSelAll(event);" />
+       <spacer flex="1" />
+      </hbox>
+      <listbox id="lstFonts" seltype="multiple" onselect="decdn_Prefs.mFontView.onListSelected();" onkeypress="decdn_Prefs.mFontView.onListKeyPress(event);" style="min-height: 18em;" flex="1">
+       <listhead>
+        <listheader id="colFontHostHdr" label="&hosts.column.site;" onclick="decdn_Prefs.mFontView.onListSort('colFontHost');" sortable="true" />
+       </listhead>
+       <listcols>
+        <listcol id="colFontHost" flex="1" />
+       </listcols>
+      </listbox>
+      <hbox>
+       <spacer flex="1" />
+       <button id="cmdFontRemove" label="&button.remove;" disabled="true" oncommand="decdn_Prefs.mFontView.onRemSelClick()" />
+       <separator orient="vertical" class="thin" />
+       <button id="cmdFontRemoveAll" label="&button.removeall;" oncommand="decdn_Prefs.mFontView.onRemAllClick()" />
+      </hbox>
+      <separator class="thin" />
+      <hbox>
+       <groupbox flex="1">
+        <caption label="&hostaddress.label;" />
+        <hbox flex="1">
+         <textbox id="txtFontSite" oninput="decdn_Prefs.mFontView.onTextInput(event.target);" onkeypress="decdn_Prefs.mFontView.onTextKeyPress(event);" flex="1" />
+         <button id="cmdFontBypass" label="+" disabled="true" oncommand="decdn_Prefs.mFontView.onAddClick();" />
+        </hbox>
+       </groupbox>
+      </hbox>
+      <separator class="thin" />
+      <description>&fonts.desc;</description>
      </vbox>
     </tabpanel>
     <tabpanel>
