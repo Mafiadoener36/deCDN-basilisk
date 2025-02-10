@@ -11,6 +11,7 @@
 <!ENTITY allowdowngrade.descB2    "If disabled, newer versions will be treated as &quot;Missing&quot;.">
 
 <!ENTITY branch.label             "Repo Branch:">
+<!ENTITY branch.refresh           "Refresh Branches List">
 <!ENTITY branch.changed           "(Requires Archive Re-Download)">
 <!ENTITY commit.label             "Repo Commit:">
 <!ENTITY reset.label              "Erase/Reset">

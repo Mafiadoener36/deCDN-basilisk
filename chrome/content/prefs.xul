@@ -60,7 +60,7 @@
            <label control="cmbBranch" value="&branch.label;" />
            <hbox align="center">
             <menulist id="cmbBranch" preference="prefBranch" oncommand="decdn_Prefs.onBranchChange(event);" sizetopopup="none" flex="1" />
-            <button id="cmdRefreshBranches" label="&#x1f501;" oncommand="decdn_Prefs.updateBranches()" />
+            <button id="cmdRefreshBranches" label="&#x1f501;" tooltiptext="&branch.refresh;" oncommand="decdn_Prefs.updateBranches()" />
             <label id="lblBranchChanged" value="&branch.changed;" />
            </hbox>
           </row>
