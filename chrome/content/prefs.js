@@ -740,8 +740,22 @@ var decdn_Prefs = {
 
   decdn_Prefs.mCDNView.updateCheckState();
 
+  decdn_Prefs._updateHash();
+  document.getElementById('prefCommit').addEventListener('change', decdn_Prefs._updateHash);
+
+  let sBranch = document.getElementById('prefBranch').defaultValue;
+  if (document.getElementById('prefBranch').hasUserValue)
+   sBranch = document.getElementById('prefBranch').valueFromPreferences;
+  decdn_Prefs._branch = sBranch;
+  decdn_Prefs.updateBranches();
+  decdn_Prefs._updateBlocking();
+ },
+ _updateHash: function()
+ {
   if (document.getElementById('prefCommit').hasUserValue)
    decdn_Prefs._commit = document.getElementById('prefCommit').valueFromPreferences;
+  else
+   decdn_Prefs._commit = '';
 
   const lnkArchive = document.getElementById('lnkArchive');
   if (!!decdn_Prefs._commit && decdn_Prefs._commit.length === 40)
@@ -765,13 +779,6 @@ var decdn_Prefs = {
    lnkArchive.removeAttribute('href');
    lnkArchive.removeAttribute('tooltiptext');
   }
-
-  let sBranch = document.getElementById('prefBranch').defaultValue;
-  if (document.getElementById('prefBranch').hasUserValue)
-   sBranch = document.getElementById('prefBranch').valueFromPreferences;
-  decdn_Prefs._branch = sBranch;
-  decdn_Prefs.updateBranches();
-  decdn_Prefs._updateBlocking();
  },
  _updateBlocking: function()
  {
