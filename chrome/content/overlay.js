@@ -9,6 +9,7 @@ var decdn_Overlay = {
  _localeP: Components.classes['@mozilla.org/intl/stringbundle;1'].getService(Components.interfaces.nsIStringBundleService).createBundle('chrome://decdn/locale/prefs.properties'),
  cleanup: false,
  _downloadState: false,
+ _gFonts: 'Google Fonts',
  init: function()
  {
   let nob = Components.classes['@mozilla.org/observer-service;1'].getService(Components.interfaces.nsIObserverService);
@@ -110,6 +111,8 @@ var decdn_Overlay = {
  },
  tabAddBlocked: function(tabID, dURI)
  {
+  if (dURI.asciiHost === 'fonts.gstatic.com' && dURI.asciiSpec.slice(-6) === '.woff2')
+   return;
   if (!decdn_TabData.hasOwnProperty(tabID))
   {
    decdn_TabData[tabID] = {
@@ -129,6 +132,8 @@ var decdn_Overlay = {
    domain: decdn_Overlay._getDomain(dURI.asciiHost),
    source: dURI.asciiHost
   };
+  if (res.source === 'fonts.googleapis.com' && !res.path.includes('materialicons') && !res.path.includes('Material+Icons') && (res.path.includes('?family=') || res.path.includes('&family=')))
+   res.source = decdn_Overlay._gFonts;
   let bFound = false;
   for (let i = 0; i < decdn_TabData[tabID].resources.length; i++)
   {
@@ -145,6 +150,8 @@ var decdn_Overlay = {
  },
  tabAddBypassed: function(tabID, dURI)
  {
+  if (dURI.asciiHost === 'fonts.gstatic.com' && dURI.asciiSpec.slice(-6) === '.woff2')
+   return;
   if (!decdn_TabData.hasOwnProperty(tabID))
   {
    decdn_TabData[tabID] = {
@@ -164,6 +171,8 @@ var decdn_Overlay = {
    domain: decdn_Overlay._getDomain(dURI.asciiHost),
    source: dURI.asciiHost
   };
+  if (res.source === 'fonts.googleapis.com' && !res.path.includes('materialicons') && !res.path.includes('Material+Icons') && (res.path.includes('?family=') || res.path.includes('&family=')))
+   res.source = decdn_Overlay._gFonts;
   let bFound = false;
   for (let i = 0; i < decdn_TabData[tabID].resources.length; i++)
   {
@@ -991,7 +1000,39 @@ var decdn_Overlay = {
    const info = sObj[source];
 
    let chkSource = false;
-   if (hasAdv && (info.block.length > 0 || info.bypass.length > 0))
+   if (source === decdn_Overlay._gFonts)
+   {
+    chkSource = document.createElement('checkbox');
+    chkSource.setAttribute('class', 'decdn-toggle bypass-toggle');
+    if (decdn_TabData[tabID].reason === decdn_CONSTS.ACTION.OPTION.INTERCEPT && !decdn_TabData[tabID].reaction)
+    {
+     chkSource.addEventListener('command', function(){
+      const tabHost = decdn_Overlay._getHostOfTab(tabID);
+      if (!tabHost)
+       return;
+      decdn_Overlay._setFontBlock(tabHost, chkSource.checked);
+      let sSet = decdn_CONSTS.ACTION.OPTION.BYPASSMISSING;
+      if (chkSource.checked)
+      {
+       chkSource.classList.add('bypass-checked');
+       sSet = decdn_CONSTS.ACTION.OPTION.BLOCKMISSING;
+      }
+      else
+      {
+       chkSource.classList.remove('bypass-checked');
+      }
+      decdn_Overlay._syncFonts(tabHost, sSet);
+      decdn_Overlay._tabUpdate(tabID);
+     });
+    }
+    else
+    {
+     chkSource.disabled = true;
+     chkSource.setAttribute('disabled', 'disabled');
+    }
+    hbSource.appendChild(chkSource);
+   }
+   else if (hasAdv && (info.block.length > 0 || info.bypass.length > 0))
    {
     chkSource = document.createElement('checkbox');
     chkSource.setAttribute('class', 'decdn-toggle bypass-toggle');
@@ -1119,19 +1160,53 @@ var decdn_Overlay = {
     const vbResG = document.createElement('vbox');
     for (let r = 0; r < info.block.length; r++)
     {
-     const hbRes = document.createElement('hbox');
-     hbRes.setAttribute('class', 'decdn-resource');
-     hbRes.setAttribute('align', 'center');
+     if (info.block[r].source === decdn_Overlay._gFonts)
+     {
+      let idx = info.block[r].path.indexOf('?family=');
+      if (idx === -1)
+       idx = info.block[r].path.indexOf('&family=');
+      idx += 8;
+      let query = info.block[r].path.slice(idx);
+      if (query.includes('&'))
+       query = query.slice(0, query.indexOf('&'));
+      const grps = query.split('|');
+      for (let g = 0; g < grps.length; g++)
+      {
+       let name = grps[g];
+       name = name.replaceAll('+', ' ');
+       name = decodeURIComponent(name);
+       if (name.includes(':'))
+        name = name.slice(0, name.indexOf(':'));
 
-     const lblRes = document.createElement('label');
-     lblRes.setAttribute('crop', 'center');
-     const sScript = decdn_Overlay._extractFilenameFromPath(info.block[r].path);
-     lblRes.setAttribute('value', sScript);
-     lblRes.setAttribute('tooltiptext', info.block[r].path);
-     lblRes.setAttribute('flex', '1');
-     hbRes.appendChild(lblRes);
+       const hbRes = document.createElement('hbox');
+       hbRes.setAttribute('class', 'decdn-resource');
+       hbRes.setAttribute('align', 'center');
 
-     vbResG.appendChild(hbRes);
+       const lblRes = document.createElement('label');
+       lblRes.setAttribute('crop', 'center');
+       lblRes.setAttribute('value', name);
+       lblRes.setAttribute('flex', '1');
+       hbRes.appendChild(lblRes);
+
+       vbResG.appendChild(hbRes);
+      }
+     }
+     else
+     {
+      const hbRes = document.createElement('hbox');
+      hbRes.setAttribute('class', 'decdn-resource');
+      hbRes.setAttribute('align', 'center');
+
+      const lblRes = document.createElement('label');
+      lblRes.setAttribute('crop', 'center');
+      const sScript = decdn_Overlay._extractFilenameFromPath(info.block[r].path);
+      lblRes.setAttribute('value', sScript);
+      lblRes.setAttribute('tooltiptext', info.block[r].path);
+      lblRes.setAttribute('flex', '1');
+      hbRes.appendChild(lblRes);
+
+      vbResG.appendChild(hbRes);
+     }
     }
     lstCDNs.appendChild(vbResG);
    }
@@ -1182,19 +1257,53 @@ var decdn_Overlay = {
     const vbResG = document.createElement('vbox');
     for (let r = 0; r < info.bypass.length; r++)
     {
-     const hbRes = document.createElement('hbox');
-     hbRes.setAttribute('class', 'decdn-resource');
-     hbRes.setAttribute('align', 'center');
+     if (info.bypass[r].source === decdn_Overlay._gFonts)
+     {
+      let idx = info.bypass[r].path.indexOf('?family=');
+      if (idx === -1)
+       idx = info.bypass[r].path.indexOf('&family=');
+      idx += 8;
+      let query = info.bypass[r].path.slice(idx);
+      if (query.includes('&'))
+       query = query.slice(0, query.indexOf('&'));
+      const grps = query.split('|');
+      for (let g = 0; g < grps.length; g++)
+      {
+       let name = grps[g];
+       name = name.replaceAll('+', ' ');
+       name = decodeURIComponent(name);
+       if (name.includes(':'))
+        name = name.slice(0, name.indexOf(':'));
 
-     const lblRes = document.createElement('label');
-     lblRes.setAttribute('crop', 'center');
-     const sScript = decdn_Overlay._extractFilenameFromPath(info.bypass[r].path);
-     lblRes.setAttribute('value', sScript);
-     lblRes.setAttribute('tooltiptext', info.bypass[r].path);
-     lblRes.setAttribute('flex', '1');
-     hbRes.appendChild(lblRes);
+       const hbRes = document.createElement('hbox');
+       hbRes.setAttribute('class', 'decdn-resource');
+       hbRes.setAttribute('align', 'center');
 
-     vbResG.appendChild(hbRes);
+       const lblRes = document.createElement('label');
+       lblRes.setAttribute('crop', 'center');
+       lblRes.setAttribute('value', name);
+       lblRes.setAttribute('flex', '1');
+       hbRes.appendChild(lblRes);
+
+       vbResG.appendChild(hbRes);
+      }
+     }
+     else
+     {
+      const hbRes = document.createElement('hbox');
+      hbRes.setAttribute('class', 'decdn-resource');
+      hbRes.setAttribute('align', 'center');
+
+      const lblRes = document.createElement('label');
+      lblRes.setAttribute('crop', 'center');
+      const sScript = decdn_Overlay._extractFilenameFromPath(info.bypass[r].path);
+      lblRes.setAttribute('value', sScript);
+      lblRes.setAttribute('tooltiptext', info.bypass[r].path);
+      lblRes.setAttribute('flex', '1');
+      hbRes.appendChild(lblRes);
+
+      vbResG.appendChild(hbRes);
+     }
     }
     lstCDNs.appendChild(vbResG);
    }
@@ -1276,13 +1385,16 @@ var decdn_Overlay = {
   {
    if (decdn_TabData[tabID].resources[i].reaction === false)
     continue;
+   let isFont = '';
+   if (decdn_TabData[tabID].resources[i].source === decdn_Overlay._gFonts)
+    isFont = 'gfont.';
    let newRef = false;
    switch (decdn_TabData[tabID].resources[i].reaction)
    {
     case decdn_CONSTS.ACTION.OPTION.BYPASS:
     case decdn_CONSTS.ACTION.OPTION.BLOCKMISSING:
     case decdn_CONSTS.ACTION.OPTION.BYPASSMISSING:
-     newRef = decdn_Overlay._locale.GetStringFromName('notice.refresh.' + decdn_TabData[tabID].resources[i].reaction);
+     newRef = decdn_Overlay._locale.GetStringFromName('notice.refresh.' + isFont + decdn_TabData[tabID].resources[i].reaction);
      break;
     case decdn_CONSTS.ACTION.OPTION.INTERCEPT:
      if (decdn_TabData[tabID].resources[i].reason === decdn_CONSTS.ACTION.OPTION.BYPASS)
@@ -1339,6 +1451,30 @@ var decdn_Overlay = {
    for (let r = 0; r < decdn_TabData[tID].resources.length; r++)
    {
     if (decdn_TabData[tID].resources[r].source !== cdn)
+     continue;
+    if (decdn_TabData[tID].resources[r].action === decdn_CONSTS.ACTION.TAKEN.INTERCEPT)
+     continue;
+    if (decdn_TabData[tID].resources[r].reason === val)
+     decdn_TabData[tID].resources[r].reaction = false;
+    else
+     decdn_TabData[tID].resources[r].reaction = val;
+   }
+  }
+ },
+ _syncFonts: function(host, val)
+ {
+  for (const tID in decdn_TabData)
+  {
+   const tabHost = decdn_Overlay._getHostOfTab(tID);
+   if (!tabHost)
+    continue;
+   if (tabHost !== host)
+    continue;
+   if (decdn_TabData[tID].reason !== decdn_CONSTS.ACTION.OPTION.INTERCEPT)
+    continue;
+   for (let r = 0; r < decdn_TabData[tID].resources.length; r++)
+   {
+    if (decdn_TabData[tID].resources[r].source !== decdn_Overlay._gFonts)
      continue;
     if (decdn_TabData[tID].resources[r].action === decdn_CONSTS.ACTION.TAKEN.INTERCEPT)
      continue;
@@ -1519,6 +1655,27 @@ var decdn_Overlay = {
    cObj[cdn] = decdn_CONSTS.ACTION.OPTION.BLOCKMISSING;
   decdn_Interceptor._Prefs.setCharPref('blockCDNs', JSON.stringify(cObj));
   return cObj.hasOwnProperty(cdn);
+ },
+ _setFontBlock: function(host, value)
+ {
+  let cList = decdn_Interceptor._Defs.getCharPref('fontDomains');
+  if (decdn_Interceptor._Prefs.prefHasUserValue('fontDomains'))
+   cList = decdn_Interceptor._Prefs.getCharPref('fontDomains');
+  let cObj = [];
+  try
+  {
+   cObj = JSON.parse(cList);
+  }
+  catch(ex)
+  {
+   cObj = [];
+  }
+  if (!value)
+   cObj.push(host);
+  else
+   cObj = cObj.filter(function(el) {return el !== host;});
+  decdn_Interceptor._Prefs.setCharPref('fontDomains', JSON.stringify(cObj));
+  return cObj.includes(host);
  },
 
  _gc: function()
