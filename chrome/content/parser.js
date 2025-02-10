@@ -123,8 +123,7 @@ var decdn_Parser = {
   switch(sBundle)
   {
    case knownBundles.MATHJAX:
-    if (fName !== 'MathJax.js')
-     fName = decdn_Parser._handleMathJax(path);
+    fName = false;
     break;
    case knownBundles.TINYMCE:
     if (fName !== 'tinymce.min.js')
