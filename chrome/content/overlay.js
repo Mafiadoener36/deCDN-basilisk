@@ -1083,9 +1083,118 @@ var decdn_Overlay = {
     hbRow.appendChild(lblResG);
 
     lstCDNs.appendChild(hbRow);
-    const vbResG = document.createElement('vbox');
+
+    const bundles = [];
+    const bundleF = [];
     for (let r = 0; r < info.intercept.length; r++)
     {
+     if (!info.intercept[r].hasOwnProperty('bundle'))
+      continue;
+     if (bundles.includes(info.intercept[r].bundle))
+      continue;
+     if (bundleF.includes(info.intercept[r].bundle))
+      bundles.push(info.intercept[r].bundle);
+     else
+      bundleF.push(info.intercept[r].bundle);
+    }
+    bundles.sort();
+
+    const vbResG = document.createElement('vbox');
+    for (let b = 0; b < bundles.length; b++)
+    {
+     const hbBundle = document.createElement('hbox');
+     hbBundle.setAttribute('class', 'decdn-resource-bundle');
+     hbBundle.setAttribute('align', 'center');
+
+     const icoAction = document.createElement('image');
+     icoAction.setAttribute('src', 'chrome://decdn/skin/res/' + decdn_CONSTS.ICON.RES.BUNDLE + '.png');
+     hbBundle.appendChild(icoAction);
+
+     const lblBundleG = document.createElement('label');
+     lblBundleG.setAttribute('value', bundles[b]);
+     lblBundleG.setAttribute('flex', '1');
+     hbBundle.appendChild(lblBundleG);
+
+     let sameVer = true;
+     let foundReq = null;
+     let foundDel = null;
+     for (let r = 0; r < info.intercept.length; r++)
+     {
+      if (!info.intercept[r].hasOwnProperty('bundle'))
+       continue;
+      if (info.intercept[r].bundle !== bundles[b])
+       continue;
+      if (foundDel === null)
+       foundDel = info.intercept[r].versionDelivered;
+      if (foundDel !== info.intercept[r].versionDelivered)
+      {
+       sameVer = false;
+       foundReq = false;
+       foundDel = false;
+       break;
+      }
+      if (foundReq === null)
+       foundReq = info.intercept[r].versionRequested;
+      if (foundReq !== info.intercept[r].versionRequested)
+      {
+       sameVer = false;
+       foundReq = false;
+       foundDel = false;
+       break;
+      }
+     }
+     if (sameVer && foundDel !== 'latest')
+     {
+      const lblVer = document.createElement('label');
+      lblVer.setAttribute('class', 'decdn-resource-version');
+      if (foundReq === 'latest' || foundDel === foundReq)
+       lblVer.setAttribute('value', 'v' + foundDel);
+      else
+       lblVer.setAttribute('value', 'v' + foundReq + ' -> v' + foundDel);
+      hbBundle.appendChild(lblVer);
+     }
+
+     vbResG.appendChild(hbBundle);
+
+     const vbBundleG = document.createElement('vbox');
+     for (let r = 0; r < info.intercept.length; r++)
+     {
+      if (!info.intercept[r].hasOwnProperty('bundle'))
+       continue;
+      if (info.intercept[r].bundle !== bundles[b])
+       continue;
+      const hbRes = document.createElement('hbox');
+      hbRes.setAttribute('class', 'decdn-bundled-resource');
+      hbRes.setAttribute('align', 'center');
+
+      const lblRes = document.createElement('label');
+      lblRes.setAttribute('crop', 'center');
+      const sScript = decdn_Overlay._extractFilenameFromPath(info.intercept[r].path);
+      lblRes.setAttribute('value', sScript);
+      lblRes.setAttribute('tooltiptext', info.intercept[r].path);
+      lblRes.setAttribute('flex', '1');
+      hbRes.appendChild(lblRes);
+
+      if (!sameVer && info.intercept[r].versionDelivered !== 'latest')
+      {
+       const lblVer = document.createElement('label');
+       lblVer.setAttribute('class', 'decdn-resource-version');
+       if (info.intercept[r].versionRequested === 'latest' || info.intercept[r].versionDelivered === info.intercept[r].versionRequested)
+        lblVer.setAttribute('value', 'v' + info.intercept[r].versionDelivered);
+       else
+        lblVer.setAttribute('value', 'v' + info.intercept[r].versionRequested + ' -> v' + info.intercept[r].versionDelivered);
+       hbRes.appendChild(lblVer);
+      }
+
+      vbBundleG.appendChild(hbRes);
+     }
+     vbResG.appendChild(vbBundleG);
+    }
+
+    for (let r = 0; r < info.intercept.length; r++)
+    {
+     if (info.intercept[r].hasOwnProperty('bundle') && bundles.includes(info.intercept[r].bundle))
+      continue;
      const hbRes = document.createElement('hbox');
      hbRes.setAttribute('class', 'decdn-resource');
      hbRes.setAttribute('align', 'center');
@@ -1716,6 +1825,8 @@ var decdn_Overlay = {
     sDir = sDir.slice(0, sDir.indexOf('@'));
    return sDir;
   }
+  if (aFile === 'plugin.min.js' && aPath.length === 8 && aPath[3] === 'tinymce')
+   return 'TinyMCE ' + aPath[aPath.length - 2] + ' plugin';
   if (decdn_Archive.scripts.ListOfFiles.hasOwnProperty(aFile))
    return decdn_Archive.scripts.ListOfFiles[aFile];
   if (aFile.includes('.min'))

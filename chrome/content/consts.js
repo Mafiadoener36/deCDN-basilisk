@@ -41,7 +41,8 @@ var decdn_CONSTS = {
    BYPASS: 'bypass',
    REFRESH_INTERCEPT: 'refresh-block',
    REFRESH_BLOCK: 'refresh-block',
-   REFRESH_BYPASS: 'refresh-bypass'
+   REFRESH_BYPASS: 'refresh-bypass',
+   BUNDLE: 'bundle'
   }
  }
 };
