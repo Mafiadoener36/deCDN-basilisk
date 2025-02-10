@@ -94,7 +94,7 @@ var decdn_Parser = {
      break;
     if (sBundle === 'vex (Bundle)' && !tPath.endsWith('.min.css') && tPath.endsWith('.css'))
      tPath = tPath.replace('.css', '.min.css');
-    break;
+    return {'source': host, 'versionRequested': wantVer, 'versionDelivered': myVer, 'path': tPath, 'bundle': sBundle};
    }
    tPath = decdn_Parser._redirTarget(tPath);
    return {'source': host, 'versionRequested': wantVer, 'versionDelivered': myVer, 'path': tPath};

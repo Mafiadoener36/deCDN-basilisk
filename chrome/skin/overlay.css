@@ -229,12 +229,34 @@ toolbar[iconsize="small"] #decdn-button.download
  display: none;
 }
 
+.decdn-resource-bundle
+{
+ padding: 3px;
+ padding-bottom: 0;
+ margin: 0;
+ -moz-padding-start: 8px;
+ background-color: rgba(32, 128, 32, 0.2);
+}
+.decdn-resource-bundle image
+{
+ margin: 2px;
+ padding: 0;
+}
+
 .decdn-resource
 {
  padding: 3px;
  padding-bottom: 0;
  -moz-padding-start: 28px;
  margin: 0;
+}
+.decdn-bundled-resource
+{
+ padding: 3px;
+ padding-bottom: 0;
+ -moz-padding-start: 32px;
+ margin: 0;
+ background-color: rgba(64, 128, 64, 0.15);
 }
 .decdn-resource-version
 {
