@@ -3,7 +3,7 @@
  <Description about="urn:mozilla:install-manifest">
   <em:name>deCDN</em:name>
   <em:id>{38DC6B77-0FD5-5F30-AC49-E9D1A422779B}</em:id>
-  <em:version>33.1</em:version>
+  <em:version>33.2</em:version>
   <em:type>2</em:type>
   <em:targetApplication>
    <Description>
