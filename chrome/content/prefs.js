@@ -1302,6 +1302,20 @@ var decdn_Prefs = {
   brw.decdn_Archive.erase();
   brw.decdn_Archive.load(newBranch);
  },
+ onClose: function()
+ {
+  const prefInstant = document.getElementById('prefInstant').value;
+  if (!prefInstant)
+   return;
+  const newBranch = document.getElementById('prefBranch').value;
+  if (decdn_Prefs._branch === newBranch)
+   return;
+  const brw = decdn_Prefs._getBrowser();
+  if (!brw)
+   return;
+  brw.decdn_Archive.erase();
+  brw.decdn_Archive.load(newBranch);
+ },
  resetArchive: function()
  {
   const dlg = Components.classes['@mozilla.org/embedcomp/prompt-service;1'].getService(Components.interfaces.nsIPromptService);

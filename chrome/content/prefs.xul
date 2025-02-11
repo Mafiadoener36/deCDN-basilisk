@@ -3,7 +3,8 @@
 <?xml-stylesheet href="chrome://decdn/skin/prefs.css" type="text/css"?>
 <!DOCTYPE decdnPrefs SYSTEM "chrome://decdn/locale/prefs.dtd">
 <prefwindow id="decdnPrefs" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-            title="&preferences.title;" onload="decdn_Prefs.init()" onbeforeaccept="decdn_Prefs.onBeforeAccept();">
+            title="&preferences.title;" onload="decdn_Prefs.init()" onbeforeaccept="decdn_Prefs.onBeforeAccept();"
+            ondialogcancel="decdn_Prefs.onClose();">
  <stringbundle id="bundle" src="chrome://decdn/locale/prefs.properties" />
  <script type="text/javascript" src="chrome://decdn/content/consts.js" />
  <script type="text/javascript" src="chrome://decdn/content/prefs.js" />
@@ -22,6 +23,7 @@
    <preference id="prefFonts" name="extensions.decdn.googlefonts" type="bool" />
    <preference id="prefFontDomains" name="extensions.decdn.fontDomains" type="string" />
    <preference id="prefPreload" name="network.preload" type="bool" />
+   <preference id="prefInstant" name="browser.preferences.instantApply" type="bool" readonly="true" />
   </preferences>
   <tabbox>
    <tabs>
