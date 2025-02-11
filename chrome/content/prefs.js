@@ -1,9 +1,13 @@
+Components.utils.import('resource://decdn/tabDB.jsm');
 var decdn_Prefs = {
  _locale: Components.classes['@mozilla.org/intl/stringbundle;1'].getService(Components.interfaces.nsIStringBundleService).createBundle('chrome://decdn/locale/prefs.properties'),
+ _dLocale: Components.classes['@mozilla.org/intl/stringbundle;1'].getService(Components.interfaces.nsIStringBundleService).createBundle('chrome://decdn/locale/decdn.properties'),
  _svcIO: Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService),
  _svcIco: Components.classes['@mozilla.org/browser/favicon-service;1'].getService(Components.interfaces.nsIFaviconService).QueryInterface(Components.interfaces.mozIAsyncFavicons),
  _commit: '',
  _branch: 'main',
+ _dlArchive: false,
+ _dlInfo: false,
  mHostView:
  {
   hostList: {},
@@ -987,9 +991,12 @@ var decdn_Prefs = {
   decdn_Prefs._branch = sBranch;
   decdn_Prefs.updateBranches();
   decdn_Prefs._updateBlocking();
+  window.setTimeout(decdn_Prefs.tDownloading, 500);
  },
  _updateHash: function()
  {
+  if (decdn_Prefs._dlArchive)
+   return;
   if (document.getElementById('prefCommit').hasUserValue)
    decdn_Prefs._commit = document.getElementById('prefCommit').valueFromPreferences;
   else
@@ -1054,6 +1061,7 @@ var decdn_Prefs = {
  },
  updateBranches: function()
  {
+  decdn_Prefs._dlInfo = true;
   document.getElementById('cmdRefreshBranches').disabled = true;
 
   let sURL = document.getElementById('prefBranchAPI').defaultValue;
@@ -1082,7 +1090,8 @@ var decdn_Prefs = {
   {
    if(xmlhttp.readyState !== 4)
     return;
-   document.getElementById('cmdRefreshBranches').disabled = false;
+   decdn_Prefs._dlInfo = false;
+   document.getElementById('cmdRefreshBranches').disabled = decdn_Prefs._dlArchive;
    if(xmlhttp.status < 200 || xmlhttp.status > 299)
    {
     decdn_Prefs._defBranch();
@@ -1137,12 +1146,12 @@ var decdn_Prefs = {
    {
     cmbBranch.appendItem(sWasBranch, sWasBranch, ' - ???');
     cmbBranch.value = sWasBranch;
-    cmbBranch.disabled = false;
+    cmbBranch.disabled = decdn_Prefs._dlArchive;
     cmbBranch.setAttribute('preference', pBranch);
     return;
    }
    cmbBranch.value = bFound;
-   cmbBranch.disabled = false;
+   cmbBranch.disabled = decdn_Prefs._dlArchive;
    cmbBranch.setAttribute('preference', pBranch);
   };
   xmlhttp.onerror = function()
@@ -1301,6 +1310,64 @@ var decdn_Prefs = {
    return;
   brw.decdn_Archive.erase();
   brw.decdn_Archive.load(newBranch);
+ },
+ tDownloading: function()
+ {
+  const cmbBranch = document.getElementById('cmbBranch');
+  const cmdRefreshBranches = document.getElementById('cmdRefreshBranches');
+  const cmdReset = document.getElementById('cmdReset');
+  if (!decdn_Download.status)
+  {
+   let tWait = 2000;
+   if (!decdn_Prefs._dlArchive)
+    tWait = 5000;
+   else
+   {
+    decdn_Prefs._dlArchive = false;
+    decdn_Prefs._updateHash();
+   }
+   cmbBranch.disabled = decdn_Prefs._dlInfo;
+   cmdRefreshBranches.disabled = decdn_Prefs._dlInfo;
+   cmdReset.disabled = false;
+   window.setTimeout(decdn_Prefs.tDownloading, tWait);
+   return;
+  }
+  decdn_Prefs._dlArchive = true;
+  const lnkArchive = document.getElementById('lnkArchive');
+  lnkArchive.removeAttribute('class');
+  lnkArchive.removeAttribute('href');
+  lnkArchive.removeAttribute('tooltiptext');
+  if (decdn_Download.status.length > 7 && decdn_Download.status.slice(0, 7) === 'error: ')
+  {
+   const errType = decdn_Download.status.slice(7);
+   let errMsg = false;
+   if (errType.length === 8 && errType.slice(0, 5) === 'code ')
+    errMsg = decdn_Prefs._dLocale.formatStringFromName('error.code', [errType.slice(5)], 1);
+   else
+    errMsg = decdn_Prefs._dLocale.GetStringFromName('error.' + errType);
+   lnkArchive.setAttribute('value', errMsg);
+   cmbBranch.disabled = decdn_Prefs._dlInfo;
+   cmdRefreshBranches.disabled = decdn_Prefs._dlInfo;
+   cmdReset.disabled = false;
+   window.setTimeout(decdn_Prefs.tDownloading, 2000);
+   return;
+  }
+  cmbBranch.disabled = true;
+  cmdRefreshBranches.disabled = true;
+  cmdReset.disabled = true;
+  if (decdn_Download.status === 'download')
+   lnkArchive.setAttribute('value', decdn_Prefs._locale.GetStringFromName('download.prepare'));
+  else if (decdn_Download.status.length > 10 && decdn_Download.status.slice(0, 10) === 'download: ')
+  {
+   const progress = decdn_Download.status.slice(10).split('/', 2);
+   const pct = Math.ceil((progress[0] / progress[1]) * 100);
+   lnkArchive.setAttribute('value', decdn_Prefs._locale.formatStringFromName('download.percent', [pct], 1));
+  }
+  else if (decdn_Download.status === 'extract')
+   lnkArchive.setAttribute('value', decdn_Prefs._locale.GetStringFromName('download.extract'));
+  else
+   lnkArchive.setAttribute('value', 'Unknown Status: ' + decdn_Download.status);
+  window.setTimeout(decdn_Prefs.tDownloading, 500);
  },
  onClose: function()
  {
