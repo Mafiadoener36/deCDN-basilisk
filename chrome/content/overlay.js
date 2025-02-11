@@ -190,8 +190,20 @@ var decdn_Overlay = {
 
  downloadState: function(status = false)
  {
-  decdn_Overlay._downloadState = status;
-  if (!!status)
+  decdn_Download.status = status;
+  const mdtr = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService(Components.interfaces.nsIWindowMediator);
+  const brEnum = mdtr.getEnumerator('navigator:browser');
+  while (brEnum.hasMoreElements())
+  {
+   const inst = brEnum.getNext();
+   if (!inst.decdn_Overlay)
+    continue;
+   inst.decdn_Overlay.downloadStateChanged();
+  }
+ },
+ downloadStateChanged: function()
+ {
+  if (!!decdn_Download.status)
   {
    decdn_Overlay._dlRender();
    return;
@@ -205,7 +217,7 @@ var decdn_Overlay = {
 
  onButtonClick: function(ev)
  {
-  if (!decdn_Overlay._downloadState)
+  if (!decdn_Download.status)
   {
    const selTabID = decdn_Overlay._getSelTabID();
    if (selTabID === false)
@@ -361,7 +373,7 @@ var decdn_Overlay = {
 
  _tabUpdate: function(tabID, knownURI = false)
  {
-  if (!!decdn_Overlay._downloadState)
+  if (!!decdn_Download.status)
   {
    if (!decdn_TabData.hasOwnProperty(tabID))
    {
@@ -515,17 +527,17 @@ var decdn_Overlay = {
 
   const lblTT = document.createElement('description');
   const lblPnl = document.createElement('description');
-  if (decdn_Overlay._downloadState === 'download' || (decdn_Overlay._downloadState.length > 10 && decdn_Overlay._downloadState.slice(0, 10) === 'download: '))
+  if (decdn_Download.status === 'download' || (decdn_Download.status.length > 10 && decdn_Download.status.slice(0, 10) === 'download: '))
   {
    lblTT.textContent = decdn_Overlay._locale.GetStringFromName('update.download');
    lblPnl.textContent = decdn_Overlay._locale.GetStringFromName('update.download');
   }
-  else if (decdn_Overlay._downloadState === 'extract')
+  else if (decdn_Download.status === 'extract')
   {
    lblTT.textContent = decdn_Overlay._locale.GetStringFromName('update.extract');
    lblPnl.textContent = decdn_Overlay._locale.GetStringFromName('update.extract');
   }
-  else if (decdn_Overlay._downloadState.length > 7 && decdn_Overlay._downloadState.slice(0, 7) === 'error: ')
+  else if (decdn_Download.status.length > 7 && decdn_Download.status.slice(0, 7) === 'error: ')
   {
    document.getElementById('decdn-tooltip-icon').setAttribute('src', 'chrome://decdn/skin/title/' + decdn_CONSTS.ICON.TITLE.ERROR + '.png');
    document.getElementById('decdn-panel-icon').setAttribute('src', 'chrome://decdn/skin/title/' + decdn_CONSTS.ICON.TITLE.ERROR + '.png');
@@ -534,11 +546,11 @@ var decdn_Overlay = {
   }
   lstTT.appendChild(lblTT);
   lstPnl.appendChild(lblPnl);
-  if (decdn_Overlay._downloadState.length > 7 && decdn_Overlay._downloadState.slice(0, 7) === 'error: ')
+  if (decdn_Download.status.length > 7 && decdn_Download.status.slice(0, 7) === 'error: ')
   {
    const lblTT2 = document.createElement('description');
    const lblPnl2 = document.createElement('description');
-   const errType = decdn_Overlay._downloadState.slice(7);
+   const errType = decdn_Download.status.slice(7);
    let errMsg = false;
    if (errType.length === 8 && errType.slice(0, 5) === 'code ')
     errMsg = decdn_Overlay._locale.formatStringFromName('error.code', [errType.slice(5)], 1);
@@ -551,7 +563,7 @@ var decdn_Overlay = {
    window.setTimeout(function(){decdn_Overlay.downloadState(false);}, 5000);
    document.getElementById('decdn-panel').openPopup(status, 'after_end', 0, 0, false, false, null);
   }
-  else if (decdn_Overlay._downloadState === 'download' || (decdn_Overlay._downloadState.length > 10 && decdn_Overlay._downloadState.slice(0, 10) === 'download: '))
+  else if (decdn_Download.status === 'download' || (decdn_Download.status.length > 10 && decdn_Download.status.slice(0, 10) === 'download: '))
   {
    lstTT.appendChild(document.createElement('separator')).setAttribute('class', 'thin');
    lstPnl.appendChild(document.createElement('separator')).setAttribute('class', 'thin');
@@ -565,7 +577,7 @@ var decdn_Overlay = {
    lblPnl2.setAttribute('class', 'pct');
    pbTT.setAttribute('flex', '1');
    pbPnl.setAttribute('flex', '1');
-   if (decdn_Overlay._downloadState === 'download')
+   if (decdn_Download.status === 'download')
    {
     pbTT.setAttribute('mode', 'undetermined');
     pbPnl.setAttribute('mode', 'undetermined');
@@ -574,7 +586,7 @@ var decdn_Overlay = {
    }
    else
    {
-    const progress = decdn_Overlay._downloadState.slice(10).split('/', 2);
+    const progress = decdn_Download.status.slice(10).split('/', 2);
     const pct = Math.ceil((progress[0] / progress[1]) * 100);
     pbTT.setAttribute('mode', 'determined');
     pbPnl.setAttribute('mode', 'determined');
@@ -1451,7 +1463,7 @@ var decdn_Overlay = {
   if (!lblRefresh)
    return;
   lblRefresh.removeAttribute('style');
-  if (!!decdn_Overlay._downloadState)
+  if (!!decdn_Download.status)
   {
    lblRefresh.collapsed = true;
    return;
