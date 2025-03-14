@@ -852,24 +852,27 @@ decdn_Interceptor.TraceListener.prototype = {
    return;
   }
 
-  let data = this.receivedData.join('');
-  data = decdn_Interceptor._replaceContent(data, this.dURIs);
-
-  const storeStream = Components.classes['@mozilla.org/storagestream;1'].createInstance(Components.interfaces.nsIStorageStream);
-  storeStream.init(8192, data.length, null);
-  const outStream = storeStream.getOutputStream(0);
-  if (data.length > 0)
-   outStream.write(data, data.length);
-  outStream.close();
-
-  try
+  if (this.receivedData.length > 0)
   {
-   this.originalListener.onDataAvailable(request, context, storeStream.newInputStream(0), 0, data.length);
-  }
-  catch (ex)
-  {
-   request.cancel(ex.result);
-   return;
+   let data = this.receivedData.join('');
+   data = decdn_Interceptor._replaceContent(data, this.dURIs);
+
+   const storeStream = Components.classes['@mozilla.org/storagestream;1'].createInstance(Components.interfaces.nsIStorageStream);
+   storeStream.init(8192, data.length, null);
+   const outStream = storeStream.getOutputStream(0);
+   if (data.length > 0)
+    outStream.write(data, data.length);
+   outStream.close();
+
+   try
+   {
+    this.originalListener.onDataAvailable(request, context, storeStream.newInputStream(0), 0, data.length);
+   }
+   catch (ex)
+   {
+    request.cancel(ex.result);
+    return;
+   }
   }
 
   try
