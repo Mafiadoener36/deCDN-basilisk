@@ -26,11 +26,11 @@
 
   <em:description>Local common CDN file provider.</em:description>
   <em:optionsURL>chrome://decdn/content/prefs.xul</em:optionsURL>
-  <em:homepageURL>https://realityripple.com/Software/XUL/deCDN/</em:homepageURL>
-  <em:updateURL>https://realityripple.com/Software/XUL/deCDN/update.rdf</em:updateURL>
+  <em:homepageURL>https://github.com/Mafiadoener36/deCDN-basilisk/</em:homepageURL>
+  <em:updateURL>https://raw.githubusercontent.com/Mafiadoener36/deCDN-basilisk/refs/heads/master/update.rdf</em:updateURL>
   <em:iconURL>chrome://decdn/skin/logo.png</em:iconURL>
   <em:icon64URL>chrome://decdn/skin/logo64.png</em:icon64URL>
-  <em:creator>RealityRipple</em:creator>
+  <em:creator>Mafiadöner36&RealityRipple</em:creator>
   <em:contributor>CDN Resources from LocalCDN by nobody</em:contributor>
  </Description>
 </RDF>
