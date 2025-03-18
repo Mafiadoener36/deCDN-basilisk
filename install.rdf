@@ -5,6 +5,17 @@
   <em:id>{38DC6B77-0FD5-5F30-AC49-E9D1A422779B}</em:id>
   <em:version>33.4</em:version>
   <em:type>2</em:type>
+
+<!-- Basilisk -->
+  <em:targetApplication>
+   <Description>
+    <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+    <em:minVersion>52.0</em:minVersion>
+    <em:maxVersion>52.*</em:maxVersion>
+   </Description>
+  </em:targetApplication>
+
+<!-- Palemoon -->
   <em:targetApplication>
    <Description>
     <em:id>{8de7fcbb-c55c-4fbe-bfc5-fc555c87dbc4}</em:id>
@@ -12,6 +23,7 @@
     <em:maxVersion>33.*</em:maxVersion>
    </Description>
   </em:targetApplication>
+
   <em:description>Local common CDN file provider.</em:description>
   <em:optionsURL>chrome://decdn/content/prefs.xul</em:optionsURL>
   <em:homepageURL>https://realityripple.com/Software/XUL/deCDN/</em:homepageURL>
