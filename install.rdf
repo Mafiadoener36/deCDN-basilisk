@@ -30,7 +30,7 @@
   <em:updateURL>https://raw.githubusercontent.com/Mafiadoener36/deCDN-basilisk/refs/heads/master/update.rdf</em:updateURL>
   <em:iconURL>chrome://decdn/skin/logo.png</em:iconURL>
   <em:icon64URL>chrome://decdn/skin/logo64.png</em:icon64URL>
-  <em:creator>Mafiadöner36&RealityRipple</em:creator>
+  <em:creator>Mafiadöner36-RealityRipple</em:creator>
   <em:contributor>CDN Resources from LocalCDN by nobody</em:contributor>
  </Description>
 </RDF>
