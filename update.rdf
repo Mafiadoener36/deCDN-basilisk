@@ -11,8 +11,8 @@
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
         <em:minVersion>52.0</em:minVersion>
         <em:maxVersion>52.*</em:maxVersion>
-        <em:updateLink>https://github.com/Mafiadoener36/deCDN-basilisk/{38DC6B77-0FD5-5F30-AC49-E9D1A422779B}.xpi</em:updateLink>
-        <em:updateHash>sha512:1e8f04eb3aa670211ee971c90c435828690fad539e7bcf899244d0cef0ffe485653c02ca18f3230a8cec7201cf8f5b9b0bfb540509f4afd31fd3a20ed3783c43</em:updateHash>
+        <em:updateLink>https://github.com/Mafiadoener36/deCDN-basilisk/releases/download/33.4-basilisk1/deCDN-33_4-basilisk-1.xpi</em:updateLink>
+        <em:updateHash>sha512:8ba21fc3166446aa651312b92c4f0865d7a7c6e78f84f51b50f4684dbf2b8e70c28ae55fa26c80a347969dffa97801da308b07616075cb2a0ddac95f0787e6bf</em:updateHash>
         <em:updateInfoURL>https://realityripple.com/Software/XUL/deCDN/update.xhtml</em:updateInfoURL>
        </RDF:Description>
       </em:targetApplication>
